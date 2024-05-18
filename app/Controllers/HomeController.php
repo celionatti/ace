@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class HomeController
+class HomeController extends Controller
 {
     public function index(Request $request) {
-        return new Response('Hello,!');
+        $name = $request->query->get('name', 'World');
+        $this->render('home/index.twig', ['name' => $name]);
     }
 }

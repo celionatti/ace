@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     "./resources/**/*.php",
-    "./resources/**/*.ace.php",
+    "./resources/**/*.twig",
     "./resources/**/*.js",
     "./resources/**/*.vue",
   ],
