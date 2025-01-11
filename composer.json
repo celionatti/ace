@@ -1,0 +1,22 @@
+{
+    "name": "celionatti/ace",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Celionatti\\Ace\\": "framework/",
+            "Ace\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "celionatti",
+            "email": "amisuusman@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^7.2"
+    }
+}
