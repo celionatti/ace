@@ -1,7 +1,0 @@
-{
-  "name": "Home Page Plugin",
-  "class": "Ace\\plugins\\",
-  "version": "1.0.0",
-  "entry_point": "Homepage.php",
-  "author": "Celio Natti"
-}

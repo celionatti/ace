@@ -10,24 +10,18 @@ declare(strict_types=1);
  * =======================================
  */
 
-use Dotenv\Dotenv;
-use Celionatti\Ace\Ace;
-use Celionatti\Ace\Router\Router;
 
+$app = require __DIR__ . '/../bootstrap/app.php';
 
-
-require __DIR__ . '/../vendor/autoload.php';
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-$dotenv = Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
-
-(new Ace())->run();
-
-assets_url();
-
-// Handle the Request
-Router::dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+try {
+    $app->run();
+} catch (Throwable $e) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error'   => 'Application failed to initialize',
+        'message' => $e->getMessage(),
+        'trace'   => ($_ENV['APP_ENV'] ?? 'production') === 'development' ? $e->getTrace() : []
+    ]);
+    exit;
+}
