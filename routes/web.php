@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Ace\ace\Ace;
-use PhpStrike\app\controllers\SiteController;
+use Ace\app\controllers\SiteController;
 use PhpStrike\app\controllers\AdminController;
 
 /** @var \Ace\ace\Router\Router $router */
@@ -14,13 +14,16 @@ use PhpStrike\app\controllers\AdminController;
  * ========================================
  */
 
-// var_dump($router);
-// die;
-
-$router->addRoute('GET', '/', function ($request, $response) {
-    $response->html('<h1>Home Page</h1>');
+$router->get('/', function($request, $response) {
+    $response->html('<h1>Welcome to Ace Framework</h1>');
 });
 
-$router->addRoute('GET', '/users/{id}/profile', function ($request, $response) {
-    $response->html('<h1>Profile Page</h1>');
+$router->get('/home/{id}', [SiteController::class, 'index']);
+
+$router->group(['prefix'     => '/admin'], function ($router) {
+    $router->get('/dashboard', [SiteController::class, 'dashboard']);
+});
+
+$router->addRoute('GET', '/users/{id}/profile', function ($request, $response, $id) {
+    $response->html("<h1>Profile Page: {$id}</h1>");
 });
