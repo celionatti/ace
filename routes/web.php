@@ -14,11 +14,7 @@ use PhpStrike\app\controllers\AdminController;
  * ========================================
  */
 
-$router->get('/', function($request, $response) {
-    $response->html('<h1>Welcome to Ace Framework</h1>');
-});
-
-$router->get('/home/{id}', [SiteController::class, 'index']);
+$router->get('/', [SiteController::class, 'index']);
 
 $router->group(['prefix'     => '/admin'], function ($router) {
     $router->get('/dashboard', [SiteController::class, 'dashboard']);

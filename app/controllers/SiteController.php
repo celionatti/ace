@@ -4,11 +4,20 @@ declare(strict_types=1);
 
 namespace Ace\app\controllers;
 
-class SiteController
+use Ace\ace\Controller;
+
+class SiteController extends Controller
 {
-    public function index($request, $response, $id)
+    public function index($request, $response)
     {
-        var_dump("Welcome to the Ace Framework Site Controller: {$id}");
+        $data = [
+            'title' => 'Welcome to Ace Framework',
+            'isLoggedIn' => true, // Change to false to test @if
+            'username' => 'AceUser',
+            'articles' => ['First Post', 'Second Post', 'Third Post']
+        ];
+
+        echo $this->render("home", $data);
     }
 
     public function dashboard($request, $response)
