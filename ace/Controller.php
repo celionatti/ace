@@ -12,7 +12,7 @@ abstract class Controller
 
     public function __construct()
     {
-        $this->view = new View(BASE_PATH . '/resources/views', BASE_PATH . '/resources/cache');
+        $this->view = new View(BASE_PATH . '/resources/views', BASE_PATH . '/resources/cache', true, false);
     }
 
     protected function render(string $template, array $data = []): string

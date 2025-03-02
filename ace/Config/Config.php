@@ -2,13 +2,7 @@
 
 declare(strict_types=1);
 
-/**
- * ==================================
- * Ace - Config Class ==============
- * ==================================
- */
-
-namespace Ace\ace;
+namespace Ace\ace\Config;
 
 use Ace\ace\Exception\ConfigException;
 

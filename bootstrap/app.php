@@ -23,7 +23,7 @@ require BASE_PATH . '/vendor/autoload.php';
 try {
     $dotenv = Dotenv::createImmutable(BASE_PATH);
     $dotenv->load();
-    $dotenv->required(['APP_KEY', 'DB_HOST', 'DB_NAME']);
+    $dotenv->required(['APP_KEY', 'DB_DATABASE', 'DB_USERNAME', 'DB_CONNECTION']);
 } catch(Exception $e) {
     die("Missing required environment variables");
 }

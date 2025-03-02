@@ -1,0 +1,38 @@
+[2025-03-02 12:18:26] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:18:26] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:21:56] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:21:56] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:23:51] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:23:51] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:24:47] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:24:47] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:25:26] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user_natti'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:25:26] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:31:06] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:31:06] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:31:33] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:31:33] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:32:31] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:32:31] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:33:21] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:33:21] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:34:28] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:34:28] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:34:38] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:34:38] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:35:04] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:35:04] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 12:35:22] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 12:35:22] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 13:29:58] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 13:29:58] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 13:32:05] [ERROR] SQLSTATE[HY000] [1049] Unknown database 'nattitickets' {"query":"","params":[],"error_code":""}
+[2025-03-02 13:32:05] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 14:27:27] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 14:27:28] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 14:30:27] [ERROR] SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) {"query":"","params":[],"error_code":""}
+[2025-03-02 14:30:27] [ERROR] Database factory error: Failed to connect to the database: SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES)
+[2025-03-02 14:30:27] [ERROR] Database initialization error: Failed to create database instance
+[2025-03-02 14:31:21] [ERROR] SQLSTATE[HY000] [1049] Unknown database 'ace' {"query":"","params":[],"error_code":""}
+[2025-03-02 14:31:21] [ERROR] Database factory error: Failed to connect to the database: SQLSTATE[HY000] [1049] Unknown database 'ace'
+[2025-03-02 14:31:21] [ERROR] Database initialization error: Failed to create database instance

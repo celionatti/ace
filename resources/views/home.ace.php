@@ -18,4 +18,11 @@
             <li>{{ $article }}</li>
         @endforeach
     </ul>
+
+    <p>Safe: {{ $content }}</p>
+    <p>UnSafe: {!! $content !!}</p>
+
+    <form>
+        @csrf
+    </form>
 @endsection

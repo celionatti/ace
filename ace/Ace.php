@@ -10,7 +10,8 @@ use Ace\ace\Router\Router;
 use Ace\ace\Container\Container;
 use Ace\ace\Exception\HttpException;
 use Ace\ace\Exception\AceException;
-use Ace\ace\Config;
+use Ace\ace\Config\Config;
+use Ace\ace\Database\Database;
 
 class Ace
 {
@@ -34,10 +35,7 @@ class Ace
         $this->request = $this->container->get(Request::class);
         $this->response = $this->container->get(Response::class);
         $this->router = $this->container->get(Router::class);
-
-        // $this->request = Request::createFromGlobals();
-        // $this->response = new Response();
-        // $this->router = new Router();
+        $this->container->get(Database::class);
     }
 
     public static function getInstance(): self
@@ -57,6 +55,13 @@ class Ace
         });
         $this->container->singleton(Response::class);
         $this->container->singleton(Router::class);
+        $this->container->singleton(Database::class, function () {
+            $config = $this->container->get(Config::class);
+            if (!Database::init($config->get('database.default'), $config->get('database.connections.mysql'))) {
+                throw new AceException("Failed to initialize database connection");
+            }
+            return new Database($config->get('database.default'), $config->get('database.connections.mysql'));
+        });
     }
 
     private function loadConfiguration(): void

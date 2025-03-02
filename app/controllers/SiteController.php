@@ -14,7 +14,8 @@ class SiteController extends Controller
             'title' => 'Welcome to Ace Framework',
             'isLoggedIn' => true, // Change to false to test @if
             'username' => 'AceUser',
-            'articles' => ['First Post', 'Second Post', 'Third Post']
+            'articles' => ['First Post', 'Second Post', 'Third Post'],
+            'content' => '<b>Hello</b>'
         ];
 
         echo $this->render("home", $data);
