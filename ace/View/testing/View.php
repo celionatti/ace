@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Ace\ace\View;
 
 use Ace\ace\Exception\AceException;
-use Ace\ace\Illuminate\CSRFGuard;
 
 class View
 {
@@ -25,7 +24,7 @@ class View
     private array $slots = [];
     private ?string $parentView = null;
     private $translator = null;
-    private ?CSRFGuard $csrfTokenGenerator = null;
+    private $csrfTokenGenerator = null;
     private array $customDirectives = [];
     private bool $debug;
     private array $compilers = [
@@ -83,7 +82,7 @@ class View
         $this->translator = $translator;
     }
 
-    public function setCsrfTokenGenerator(CSRFGuard $generator): void
+    public function setCsrfTokenGenerator(callable $generator): void
     {
         $this->csrfTokenGenerator = $generator;
     }
@@ -168,7 +167,6 @@ class View
             '/@endslot/' => '<?php $this->endSlot(); ?>',
             '/@lang\([\'"](.*?)[\'"]\)/' => '<?= $this->translate("$1") ?>',
             '/@csrf/' => '<?= $this->generateCsrfField() ?>',
-            '/@csrf_meta/' => '<?= $this->generateCsrfMetaTag() ?>',
         ];
 
         return preg_replace(array_keys($patterns), array_values($patterns), $content);
@@ -264,16 +262,8 @@ class View
             throw new AceException("CSRF token generator not configured.");
         }
 
-        return $this->csrfTokenGenerator->field();
-    }
-
-    private function generateCsrfMetaTag(): string
-    {
-        if (!$this->csrfTokenGenerator) {
-            throw new AceException("CSRF token generator not configured.");
-        }
-
-        return $this->csrfTokenGenerator->metaTag();
+        $token = ($this->csrfTokenGenerator)();
+        return '<input type="hidden" name="_token" value="'.htmlspecialchars($token, ENT_QUOTES).'">';
     }
 
     private function formatError(Throwable $e, string $templatePath): string

@@ -12,6 +12,7 @@ use Ace\ace\Exception\HttpException;
 use Ace\ace\Exception\AceException;
 use Ace\ace\Config\Config;
 use Ace\ace\Database\Database;
+use Ace\ace\View\View;
 
 class Ace
 {
@@ -62,6 +63,7 @@ class Ace
             }
             return new Database($config->get('database.default'), $config->get('database.connections.mysql'));
         });
+        $this->container->singleton(View::class);
     }
 
     private function loadConfiguration(): void

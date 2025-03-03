@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ace\ace;
 
 use Ace\ace\View\View;
+use Ace\ace\Illuminate\CSRFGuard;
 
 abstract class Controller
 {
@@ -13,6 +14,7 @@ abstract class Controller
     public function __construct()
     {
         $this->view = new View(BASE_PATH . '/resources/views', BASE_PATH . '/resources/cache', true, false);
+        $this->view->setCsrfTokenGenerator(new CSRFGuard());
     }
 
     protected function render(string $template, array $data = []): string

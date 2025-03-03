@@ -92,13 +92,19 @@ class Logger
      */
     private static function log(string $level, string $message, array $context = []): void
     {
+        $logFilePath = BASE_PATH . DIRECTORY_SEPARATOR . self::$logFile;
+        $logDir = dirname($logFilePath);
+
         // Create log directory if it doesn't exist
-        $dir = dirname(self::$logFile);
-        if (!file_exists($dir)) {
-            if (!mkdir($dir, 0755, true)) {
-                // Can't create log directory, so don't try to log
+        if (!is_dir($logDir)) {
+            if (!mkdir($logDir, 0755, true) && !is_dir($logDir)) {
                 return;
             }
+        }
+
+        // Ensure the directory is writable
+        if (!is_writable($logDir)) {
+            return;
         }
 
         // Format the log message
@@ -107,7 +113,7 @@ class Logger
         $logMessage = "[$timestamp] [$level] $message$contextStr" . PHP_EOL;
 
         // Write to log file
-        file_put_contents(self::$logFile, $logMessage, FILE_APPEND);
+        file_put_contents($logFilePath, $logMessage, FILE_APPEND);
     }
 
     /**
