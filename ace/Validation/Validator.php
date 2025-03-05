@@ -59,9 +59,7 @@ class Validator
 
     protected function validateRequired($field)
     {
-        // if (!isset($this->data[$field]) || empty($this->data[$field])) {
-        //     $this->errors[$field] = "{$field} is required.";
-        // }
+
         if (!isset($this->data[$field]) || empty($this->data[$field])) {
             $this->errors[$field] = $this->formatFieldName($field) . " is required.";
         }
@@ -69,9 +67,6 @@ class Validator
 
     protected function validateEmail($field)
     {
-        // if (!filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
-        //     $this->errors[$field] = "{$field} must be a valid email address.";
-        // }
         if (!filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
             $this->errors[$field] = $this->formatFieldName($field) . " must be a valid email address.";
         }
