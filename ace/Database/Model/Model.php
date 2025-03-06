@@ -7,6 +7,7 @@ namespace Ace\ace\Database\Model;
 use Ace\ace\Database\Database;
 use Ace\ace\Database\QueryBuilder\QueryBuilder;
 use Ace\ace\Validation\Validator;
+use Ace\ace\Database\Trait\Pagination;
 
 abstract class Model
 {
@@ -77,6 +78,11 @@ abstract class Model
         if (!empty($attributes)) {
             $this->fill($attributes);
         }
+    }
+
+    public function getTable(): string
+    {
+        return $this->table;
     }
 
     /**

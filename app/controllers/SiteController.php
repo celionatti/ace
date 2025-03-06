@@ -13,7 +13,7 @@ class SiteController extends Controller
     {
         $user = new User();
         echo "<pre>";
-        var_dump($user->find(1)->toJson());
+        var_dump($user->paginate());
         // var_dump($user->findByEmail("amisuusman@gmail.com"));
         die;
         $data = [
