@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * =======================================
+ * ***************************************
+ * ============= BOLT CLI ================
+ * ***************************************
+ * =======================================
+ */
+
+// Make sure we're running in CLI mode
+if (php_sapi_name() !== 'cli') {
+    exit('This script must be run from the command line.');
+}
+
+define('BASE_PATH', __DIR__);
+
+require BASE_PATH . '/vendor/autoload.php';
+
+// Import required classes
+use Ace\ace\Command\CommandRunner;
+use Ace\ace\Command\TermUI;
+use Ace\ace\Command\Commands\HelloCommand;
+use Ace\ace\Command\Commands\ModelCommand;
+
+$header = <<<EOT
+╔═══════════════════════════════╗
+║                               ║
+║    Welcome to Bolt CLI        ║
+║                               ║
+╚═══════════════════════════════╝
+EOT;
+
+echo TermUI::CYAN . TermUI::BOLD . $header . TermUI::RESET . PHP_EOL . PHP_EOL;
+
+// Create the command runner
+$runner = new CommandRunner('BOLT CLI', '1.0.0');
+
+// Register commands manually
+$runner->register(new HelloCommand());
+$runner->register(new ModelCommand());
+
+// Discover commands in a directory
+// $runner->discover(__DIR__ . '/app/CLI/Commands', 'App\\CLI\\Commands');
+
+// Run the command
+exit($runner->run());
