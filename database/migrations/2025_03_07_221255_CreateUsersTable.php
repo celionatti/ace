@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Database\Migrations;
+namespace Ace\database\migrations;
 
-use App\Core\Migration;
-use App\Core\Schema;
+use Ace\ace\Database\Migration\Migration;
+use Ace\ace\Database\Schema\Schema;
 
 class CreateUsersTable extends Migration
 {
@@ -14,12 +14,12 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('userses', function ($table) {
+        Schema::create('users', function ($table) {
             $table->id();
             $table->string('name');
             $table->string('email');
+            $table->integer('phone');
             $table->string('password');
-            $table->text('bio');
 
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('userses');
+        Schema::dropIfExists('users');
     }
 }

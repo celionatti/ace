@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Ace\database\migrations;
+
+use Ace\ace\Database\Migration\Migration;
+use Ace\ace\Database\Schema\Schema;
+
+class {{MigrationName}} extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('{{TableName}}', function ($table) {
+            $table->id();
+{{Fields}}
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('{{TableName}}');
+    }
+}

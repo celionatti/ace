@@ -230,6 +230,8 @@ class ModelCommand extends Command
         return <<<'EOT'
 <?php
 
+declare(strict_types=1);
+
 namespace Ace\app\models;
 
 use Ace\ace\Database\Model\Model;
@@ -292,6 +294,8 @@ EOT;
         return <<<'EOT'
 <?php
 
+declare(strict_types=1);
+
 namespace Ace\database\migrations;
 
 use Ace\ace\Database\Migration\Migration;
@@ -331,14 +335,26 @@ EOT;
      */
     protected function pluralize($word)
     {
-        $last_letter = strtolower($word[strlen($word) - 1]);
-        switch ($last_letter) {
-            case 'y':
-                return substr($word, 0, -1) . 'ies';
-            case 's':
-                return $word . 'es';
-            default:
-                return $word . 's';
+        // List of singular words that end in "s" but require "es" to form the plural.
+        $singularExceptions = ['bus', 'kiss', 'class', 'glass', 'quiz'];
+
+        // If the word ends with 's' and is not in the exceptions,
+        // assume it's already plural.
+        if (strtolower(substr($word, -1)) === 's' && !in_array(strtolower($word), $singularExceptions)) {
+            return $word;
         }
+
+        // If the word ends with a consonant followed by 'y', change 'y' to 'ies'
+        if (preg_match('/([^aeiou])y$/i', $word)) {
+            return preg_replace('/y$/i', 'ies', $word);
+        }
+
+        // If the word ends with s, x, z, ch, or sh, or is one of our singular exceptions, append 'es'
+        if (preg_match('/(s|x|z|ch|sh)$/i', $word) || in_array(strtolower($word), $singularExceptions)) {
+            return $word . 'es';
+        }
+
+        // Default rule: append 's'
+        return $word . 's';
     }
 }

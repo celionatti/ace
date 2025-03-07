@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ace\app\models;
 
 use Ace\ace\Database\Model\Model;
 use Ace\ace\Database\Interface\ModelInterface;
 use Ace\ace\Database\QueryBuilder\QueryBuilder;
 
-class Users extends Model implements ModelInterface
+class {{ModelName}} extends Model implements ModelInterface
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'users';
+    protected $table = '{{TableName}}';
 
     /**
      * The attributes that are mass assignable.
@@ -21,10 +23,16 @@ class Users extends Model implements ModelInterface
      * @var array
      */
     protected array $fillable = [
-        'name',
-        'email',
-        'phone',
-        'password',
+{{Fields}}
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected array $casts = [
+        // Add your casts here
     ];
 
     /**
@@ -33,6 +41,18 @@ class Users extends Model implements ModelInterface
     protected array $hidden = [
         'password'
     ];
+
+    /**
+     * Get the validation rules for this model.
+     *
+     * @return array
+     */
+    public static function rules()
+    {
+        return [
+            // Add validation rules here
+        ];
+    }
 
     public function applySearch(QueryBuilder $query, string $searchTerm): void
     {
