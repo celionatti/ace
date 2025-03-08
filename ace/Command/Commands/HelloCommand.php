@@ -22,43 +22,35 @@ class HelloCommand extends Command
 
     public function handle($arguments, $options)
     {
-        // Ask for style preference if not provided
-        if (!isset($options['color']) || empty($options['color'])) {
-            $options['color'] = TermUI::select("Choose a color for your greeting", [
-                'green' => 'Green (default)',
-                'blue' => 'Blue',
-                'red' => 'Red',
-                'yellow' => 'Yellow'
-            ]);
+        // Get name argument
+        $name = $arguments['name'];
 
-            if ($options['color'] === null) {
-                $options['color'] = 'green';
-            }
+        // Handle uppercase option
+        $message = "Hello, {$name}!";
+        if (isset($options['uppercase']) && $options['uppercase']) {
+            $message = strtoupper($message);
         }
 
-        // Map color names to TermUI constants
+        // Handle times option
+        $times = isset($options['times']) ? (int)$options['times'] : 1;
+
+        // Handle color option
+        $colorName = isset($options['color']) ? $options['color'] : 'green';
         $colorMap = [
             'green' => TermUI::GREEN,
             'blue' => TermUI::BLUE,
             'red' => TermUI::RED,
             'yellow' => TermUI::YELLOW
         ];
+        $color = isset($colorMap[$colorName]) ? $colorMap[$colorName] : TermUI::GREEN;
 
-        $color = isset($colorMap[$options['color']]) ? $colorMap[$options['color']] : TermUI::GREEN;
-
-        $name = $arguments['name'];
-        $message = "Hello, {$name}!";
-
-        if ($options['uppercase']) {
-            $message = strtoupper($message);
-        }
-
-        $times = (int)$options['times'];
+        // Build output
         $output = "";
         for ($i = 0; $i < $times; $i++) {
             $output .= $message . PHP_EOL;
         }
 
+        // Display output
         TermUI::box("GREETING", $output, $color);
 
         return 0;
