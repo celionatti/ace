@@ -19,12 +19,46 @@ if (php_sapi_name() !== 'cli') {
 define('BASE_PATH', __DIR__);
 
 require BASE_PATH . '/vendor/autoload.php';
+require __DIR__ . '/ace/functions.php';
 
 // Import required classes
+use Dotenv\Dotenv;
+use Ace\ace\Container\Container;
+use Ace\ace\Exception\AceException;
+use Ace\ace\Config\Config;
+use Ace\ace\Database\Database;
 use Ace\ace\Command\CommandRunner;
 use Ace\ace\Command\TermUI;
 use Ace\ace\Command\Commands\HelloCommand;
 use Ace\ace\Command\Commands\ModelCommand;
+
+
+$dotenv = Dotenv::createImmutable(BASE_PATH);
+$dotenv->load();
+$container = new Container();
+
+// Register the Config singleton and load the database configuration.
+$container->singleton(Config::class, fn() => new Config());
+
+loadConfiguration($container);
+
+// Register the Database singleton.
+$container->singleton(Database::class, function () use ($container) {
+    $config = $container->get(Config::class);
+    // of the array returned in your database.php file.
+    if (!Database::init($config->get('database.default'), $config->get('database.connections.mysql'))) {
+        throw new AceException("Failed to initialize database connection");
+    }
+    return new Database($config->get('database.default'), $config->get('database.connections.mysql'));
+});
+
+function loadConfiguration($container): void
+{
+    $config = $container->get(Config::class);
+    $config->loadMultiple([
+        config_path("database.php")
+    ]);
+}
 
 $header = <<<EOT
 ╔═══════════════════════════════╗

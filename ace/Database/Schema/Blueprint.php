@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Ace\ace\Database\Schema;
 
+use Ace\ace\Database\Schema\ForeignKeyDefinition;
+use Ace\ace\Database\Schema\ColumnDefinition;
+
 class Blueprint
 {
     /**

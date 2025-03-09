@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ace\ace\Database\Schema;
 
+use Ace\ace\Database\Schema\Blueprint;
+
 class Schema
 {
     /**
