@@ -49,3 +49,30 @@ if(!function_exists('pluralize')) {
         return $word . 's';
     }
 }
+
+if(!function_exists('singularize')) {
+    function singularize($word)
+    {
+        // If the word ends with 'ies', change to 'y'
+        if (preg_match('/([^aeiou])ies$/i', $word)) {
+            return preg_replace('/ies$/i', 'y', $word);
+        }
+
+        // If the word ends with 'es', check for special cases
+        if (preg_match('/es$/i', $word)) {
+            // Words ending with sh, ch, s, x, z
+            if (preg_match('/(sh|ch|s|x|z)es$/i', $word)) {
+                return preg_replace('/es$/i', '', $word);
+            }
+            // Default case for 'es' endings
+            return preg_replace('/es$/i', '', $word);
+        }
+
+        // Default rule: remove trailing 's' if it exists
+        if (preg_match('/s$/i', $word) && !preg_match('/(ss|us)$/i', $word)) {
+            return preg_replace('/s$/i', '', $word);
+        }
+
+        return $word;
+    }
+}

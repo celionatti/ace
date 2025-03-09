@@ -29,8 +29,12 @@ use Ace\ace\Config\Config;
 use Ace\ace\Database\Database;
 use Ace\ace\Command\CommandRunner;
 use Ace\ace\Command\TermUI;
+use Ace\ace\Database\Schema\Schema;
 use Ace\ace\Command\Commands\HelloCommand;
 use Ace\ace\Command\Commands\ModelCommand;
+use Ace\ace\Command\Commands\ViewCommand;
+use Ace\ace\Command\Commands\ControllerCommand;
+use Ace\ace\Command\Commands\ComponentCommand;
 
 
 $dotenv = Dotenv::createImmutable(BASE_PATH);
@@ -60,6 +64,8 @@ function loadConfiguration($container): void
     ]);
 }
 
+Schema::setConnection($container->get(Database::class));
+
 $header = <<<EOT
 ╔═══════════════════════════════╗
 ║                               ║
@@ -76,9 +82,12 @@ $runner = new CommandRunner('BOLT CLI', '1.0.0');
 // Register commands manually
 $runner->register(new HelloCommand());
 $runner->register(new ModelCommand());
+$runner->register(new ViewCommand());
+$runner->register(new ComponentCommand());
+$runner->register(new ControllerCommand());
 
 // Discover commands in a directory
-// $runner->discover(__DIR__ . '/app/CLI/Commands', 'App\\CLI\\Commands');
+// $runner->discover(__DIR__ . '/ace/Command/Commands', 'Ace\\ace\\Command\\Commands');
 
 // Run the command
 exit($runner->run());

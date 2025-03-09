@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ace\ace\Database\Schema;
 
 use Ace\ace\Database\Schema\Blueprint;
+use Ace\ace\Database\Database;
 
 class Schema
 {
@@ -21,7 +22,7 @@ class Schema
      * @param \PDO $connection
      * @return void
      */
-    public static function setConnection(\PDO $connection)
+    public static function setConnection(Database $connection)
     {
         self::$connection = $connection;
     }

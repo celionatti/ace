@@ -64,18 +64,15 @@ class TermUI
     public static function select($question, array $options, $color = self::GREEN)
     {
         echo $color . self::BOLD . "┌─" . $question . "────────────────────┐" . self::RESET . PHP_EOL;
-
         foreach ($options as $key => $option) {
-            echo $color . "│ " . self::RESET . "[$key] $option" . str_repeat(" ", 20 - strlen($option)) . $color . " │" . self::RESET . PHP_EOL;
+            $padding = max(0, 20 - strlen($option)); // Ensure padding is never negative
+            echo $color . "│ " . self::RESET . "[$key] $option" . str_repeat(" ", $padding) . $color . " │" . self::RESET . PHP_EOL;
         }
-
         echo $color . self::BOLD . "└───────────────────────────────┘" . self::RESET . PHP_EOL;
-
         echo $color . "Select an option: " . self::RESET;
         $handle = fopen("php://stdin", "r");
         $line = trim(fgets($handle));
         fclose($handle);
-
         return isset($options[$line]) ? $line : null;
     }
 
