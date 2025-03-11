@@ -12,7 +12,7 @@ namespace Ace\ace\View;
 
 use Ace\ace\Exception\AceException;
 
-class AceView
+class workingView
 {
     private string $title = '';
     private string $header = 'Dashboard';
@@ -294,22 +294,20 @@ class AceView
         $requiredParams = $ref->getNumberOfRequiredParameters();
 
         if ($requiredParams > 0) {
-            // For directives with parameters (e.g., @if, @section)
-            $escapedPattern = preg_quote($pattern, '/');
-
-            // Use a non-greedy pattern that properly captures the expression
+            // For directives with parameters (e.g., @if, @section), capture the expression inside parentheses.
+            $regex = '/' . preg_quote($pattern, '/') . '\s*\((.*?)\)/';
             return preg_replace_callback(
-                '/' . $escapedPattern . '\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/',
+                $regex,
                 function($matches) use ($callback) {
-                    // The expression is in matches[1]
-                    return $callback(trim($matches[1]));
+                    return $callback($matches[1]);
                 },
                 $template
             );
         } else {
-            // For directives without parameters (e.g., @else)
+            // For directives without parameters (e.g., @else), simply replace the directive.
+            $regex = '/' . preg_quote($pattern, '/') . '/';
             return preg_replace_callback(
-                '/' . preg_quote($pattern, '/') . '(?![a-zA-Z0-9_])/',
+                $regex,
                 function() use ($callback) {
                     return $callback();
                 },

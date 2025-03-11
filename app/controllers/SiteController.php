@@ -11,20 +11,22 @@ class SiteController extends Controller
 {
     public function index($request, $response)
     {
+        $this->view->setLayout('default');
         $user = new User();
-        echo "<pre>";
-        var_dump($user->paginate());
+        // echo "<pre>";
+        // var_dump($user->paginate());
         // var_dump($user->findByEmail("amisuusman@gmail.com"));
-        die;
+        // die;
         $data = [
             'title' => 'Welcome to Ace Framework',
             'isLoggedIn' => true, // Change to false to test @if
-            'username' => 'AceUser',
+            'user' => 'AceUser',
             'articles' => ['First Post', 'Second Post', 'Third Post'],
             'content' => '<b>Hello</b>'
         ];
 
-        echo $this->render("home", $data);
+
+        $this->view->render("home", $data);
     }
 
     public function dashboard($request, $response)

@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 
+if(!function_exists('assets')) {
+    function asset($path) {
+        return '/assets/' . $path;
+    }
+}
+
 if (!function_exists('config_path')) {
     function config_path(string $path = ''): string
     {

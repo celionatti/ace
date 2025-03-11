@@ -78,10 +78,18 @@ class Response
     private function setDefaultHeaders(): void
     {
         $this->headers = [
-            'content-security-policy' => "default-src 'self'",
-            'x-content-type-options' => 'nosniff',
-            'x-frame-options' => 'DENY',
-            'strict-transport-security' => 'max-age=31536000; includeSubDomains',
+            // 'content-security-policy' => "default-src 'self'",
+            // 'x-content-type-options' => 'nosniff',
+            // 'x-frame-options' => 'DENY',
+            // 'strict-transport-security' => 'max-age=31536000; includeSubDomains',
+            'content-security-policy' => "default-src 'self'; " .
+                                     "script-src 'self' https://cdn.jsdelivr.net; " .
+                                     "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; " .
+                                     "img-src 'self' data:; " .
+                                     "font-src 'self' https://cdn.jsdelivr.net;",
+        'x-content-type-options' => 'nosniff',
+        'x-frame-options' => 'DENY',
+        'strict-transport-security' => 'max-age=31536000; includeSubDomains',
         ];
     }
 

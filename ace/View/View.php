@@ -4,298 +4,380 @@ declare(strict_types=1);
 
 /**
  * ================================
- * View Class =====================
+ * View Class ===========
  * ================================
  */
 
 namespace Ace\ace\View;
 
 use Ace\ace\Exception\AceException;
-use Ace\ace\Illuminate\CSRFGuard;
 
 class View
 {
-    private string $viewsPath;
-    private string $cachePath;
-    private bool $cacheEnabled;
-    private array $globals = [];
+    private string $title = '';
+    private string $header = 'Dashboard';
     private array $sections = [];
-    private array $sectionStack = [];
-    private array $componentStack = [];
-    private array $slots = [];
-    private ?string $parentView = null;
-    private $translator = null;
-    private ?CSRFGuard $csrfTokenGenerator = null;
-    private array $customDirectives = [];
-    private bool $debug;
-    private array $compilers = [
-        'comments',
-        'directives',
-        'unescaped',
-        'php',
-    ];
+    private ?string $currentSection = null;
+    private string $layout = 'default';
+    private array $directives = [];
+    private string $baseTemplatePath;
+    private string $baseCachePath;
+    private const TEMPLATE_EXTENSION = '.php';
 
-    public function __construct(string $viewsPath, string $cachePath = '', bool $cacheEnabled = true, bool $debug = false) {
-        $this->viewsPath = rtrim($viewsPath, '/');
-        $this->cachePath = $cachePath ? rtrim($cachePath, '/') : sys_get_temp_dir();
-        $this->cacheEnabled = $cacheEnabled;
-        $this->debug = $debug;
+    /**
+     * Initialize the View class
+     *
+     * @param string|null $templatesPath Base path for templates
+     * @param string|null $cachePath Base path for cache
+     */
+    public function __construct(?string $templatesPath = null, ?string $cachePath = null)
+    {
+        // Default paths if not provided
+        $this->baseTemplatePath = $templatesPath ?? dirname(__DIR__, 3) . '/resources';
+        $this->baseCachePath = $cachePath ?? dirname(__DIR__, 3) . '/storage/cache';
 
-        if (!is_writable($this->cachePath)) {
-            throw new AceException("Cache directory is not writable: {$this->cachePath}");
-        }
+        $this->registerDirectives();
     }
 
-    public function render(string $template, array $data = []): string
+    /**
+     * Sets the base path for templates
+     */
+    public function setTemplatePath(string $path): self
     {
-        $templateFile = "{$this->viewsPath}/{$template}.ace.php";
+        $this->baseTemplatePath = rtrim($path, '/\\');
+        return $this;
+    }
 
-        if (!file_exists($templateFile)) {
-            throw new AceException("Template not found: {$template}");
+    /**
+     * Sets the base path for cache
+     */
+    public function setCachePath(string $path): self
+    {
+        $this->baseCachePath = rtrim($path, '/\\');
+        return $this;
+    }
+
+    /**
+     * Resolves a template path to its full path
+     */
+    private function resolvePath(string $path, string $type = 'resources'): string
+    {
+        // Clean the path of any potential directory traversal
+        $path = preg_replace('/\.{2,}/', '', $path);
+        $path = str_replace(['\\', '//'], DIRECTORY_SEPARATOR, $path);
+        $path = ltrim($path, '/\\');
+
+        // Add extension if not already present
+        if (!str_ends_with($path, self::TEMPLATE_EXTENSION)) {
+            $path .= self::TEMPLATE_EXTENSION;
         }
 
-        try {
-            extract(array_merge($this->globals, $data));
-            ob_start();
-            include $this->compile($templateFile);
-            $content = ob_get_clean();
+        if ($type === 'resources') {
+            return $this->baseTemplatePath . DIRECTORY_SEPARATOR . $path;
+        } elseif ($type === 'cache') {
+            return $this->baseCachePath . DIRECTORY_SEPARATOR . md5($path) . self::TEMPLATE_EXTENSION;
+        }
 
-            if ($this->parentView) {
-                $parent = $this->parentView;
-                $this->parentView = null;
-                return $this->render($parent, $data);
+        throw new AceException("Invalid path type: $type");
+    }
+
+    /**
+     * Sets the layout template to use
+     */
+    public function setLayout(string $layout): self
+    {
+        $this->layout = $layout;
+        return $this;
+    }
+
+    /**
+     * Sets the page title
+     */
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Gets the page title
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Gets the page header
+     */
+    public function getHeader(): string
+    {
+        return $this->header;
+    }
+
+    /**
+     * Sets the page header
+     */
+    public function setHeader(string $header): self
+    {
+        $this->header = $header;
+        return $this;
+    }
+
+    /**
+     * Starts capturing content for a named section
+     */
+    public function start(string $key): void
+    {
+        if (empty($key)) {
+            throw new AceException("Section key cannot be empty");
+        }
+
+        $this->currentSection = $key;
+        ob_start();
+    }
+
+    /**
+     * Ends capturing content for the current section
+     */
+    public function end(): void
+    {
+        if ($this->currentSection === null) {
+            throw new AceException("No active section to end");
+        }
+
+        $this->sections[$this->currentSection] = ob_get_clean();
+        $this->currentSection = null;
+    }
+
+    /**
+     * Outputs the content of a section
+     */
+    public function content(string $key): void
+    {
+        echo $this->sections[$key] ?? '';
+    }
+
+    /**
+     * Includes a partial template
+     */
+    public function partial(string $path, array $params = []): void
+    {
+        $fullPath = $this->resolvePath('partials' . DIRECTORY_SEPARATOR . $path);
+
+        if (!file_exists($fullPath)) {
+            throw new AceException("Partial view not found: $path", 404);
+        }
+
+        extract($params);
+        include $fullPath;
+    }
+
+    /**
+     * Renders a template with optional parameters
+     */
+    public function render(string $path, array $params = [], bool $returnOutput = false): ?string
+    {
+        try {
+            $output = $this->renderTemplate($path, $params);
+
+            if ($returnOutput) {
+                return $output;
             }
 
-            return $content;
-        } catch (Throwable $e) {
+            echo $output;
+            return null;
+        } catch (AceException $e) {
+            if ($returnOutput) {
+                throw $e;
+            }
+
+            echo 'Rendering Error: ' . $e->getMessage();
+            return null;
+        }
+    }
+
+    /**
+     * Renders data as JSON and sets appropriate headers
+     */
+    public function renderJson(array $data): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
+    /**
+     * Compiles and renders a template with its layout
+     */
+    private function renderTemplate(string $path, array $params = []): string
+    {
+        // If path is empty, just return any captured sections
+        if (empty($path)) {
+            return '';
+        }
+
+        $viewPath = $this->resolvePath($path);
+        $layoutPath = $this->resolvePath('layouts' . DIRECTORY_SEPARATOR . $this->layout);
+
+        if (!file_exists($viewPath)) {
+            throw new AceException("View not found: $path", 404);
+        }
+
+        if (!file_exists($layoutPath)) {
+            throw new AceException("Layout not found: {$this->layout}", 404);
+        }
+
+        // Extract parameters into variables
+        extract($params);
+
+        // Render the view content
+        $viewContent = file_get_contents($viewPath);
+        $compiledView = $this->compileTemplate($viewContent);
+
+        // Capture the view output
+        ob_start();
+        try {
+            eval('?>' . $compiledView);
+        } catch (\Throwable $e) {
             ob_end_clean();
-            throw new AceException($this->formatError($e, $templateFile), 0, $e);
+            throw new AceException("Error rendering view template: " . $e->getMessage());
         }
+        $viewOutput = ob_get_clean();
+
+        // Render the layout with sections
+        $layoutContent = file_get_contents($layoutPath);
+        $compiledLayout = $this->compileTemplate($layoutContent);
+
+        // Capture the layout output
+        ob_start();
+        try {
+            eval('?>' . $compiledLayout);
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw new AceException("Error rendering layout template: " . $e->getMessage());
+        }
+        $output = ob_get_clean();
+
+        return $output;
     }
 
-    public function addGlobal(string $key, $value): void
+    /**
+     * Compiles a template string by processing directives and expressions
+     */
+    private function compileTemplate(string $template): string
     {
-        $this->globals[$key] = $value;
-    }
-
-    public function setTranslator(callable $translator): void
-    {
-        $this->translator = $translator;
-    }
-
-    public function setCsrfTokenGenerator(CSRFGuard $generator): void
-    {
-        $this->csrfTokenGenerator = $generator;
-    }
-
-    public function registerDirective(string $name, callable $handler): void
-    {
-        $this->customDirectives[$name] = $handler;
-    }
-
-    public function setCacheEnabled(bool $enabled): void
-    {
-        $this->cacheEnabled = $enabled;
-    }
-
-    private function compile(string $templatePath): string
-    {
-        $cacheFile = $this->cachePath.'/'.md5($templatePath).'.php';
-
-        if (!$this->cacheEnabled || !file_exists($cacheFile) ||
-            filemtime($templatePath) > filemtime($cacheFile)) {
-            $content = file_get_contents($templatePath);
-            $compiled = $this->compileString($content, $templatePath);
-            file_put_contents($cacheFile, $compiled);
+        // Process directives first
+        foreach ($this->directives as $pattern => $callback) {
+            $template = $this->compileDirectives($template, $pattern, $callback);
         }
 
-        return $cacheFile;
+        // Process {{ }} expressions
+        $template = preg_replace_callback('/\{\{\s*(.+?)\s*\}\}/', function($matches) {
+            return '<?php echo htmlspecialchars(' . $matches[1] . ', ENT_QUOTES, \'UTF-8\'); ?>';
+        }, $template);
+
+        // Process {!! !!} for unescaped output
+        $template = preg_replace_callback('/\{!!\s*(.+?)\s*!!\}/', function($matches) {
+            return '<?php echo ' . $matches[1] . '; ?>';
+        }, $template);
+
+        return $template;
     }
 
-    private function compileString(string $content, string $templatePath): string
+    /**
+     * Compiles a specific directive in the template
+     */
+    private function compileDirectives(string $template, string $pattern, callable $callback): string
     {
-        $content = $this->addLineNumbers($content, $templatePath);
+        // Determine how many required parameters the callback expects
+        $ref = new \ReflectionFunction(\Closure::fromCallable($callback));
+        $requiredParams = $ref->getNumberOfRequiredParameters();
 
-        foreach ($this->compilers as $compiler) {
-            $content = $this->{"compile{$compiler}"}($content);
-        }
+        if ($requiredParams > 0) {
+            // For directives with parameters (e.g., @if, @section)
+            $escapedPattern = preg_quote($pattern, '/');
 
-        foreach ($this->customDirectives as $name => $handler) {
-            $content = preg_replace_callback(
-                "/@{$name}\s*(\( ( (?>[^()]+) | (?1) )* \))?/x",
-                fn ($matches) => $handler($matches),
-                $content
+            // Use a non-greedy pattern that properly captures the expression
+            return preg_replace_callback(
+                '/' . $escapedPattern . '\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)/',
+                function($matches) use ($callback) {
+                    // The expression is in matches[1]
+                    return $callback(trim($matches[1]));
+                },
+                $template
+            );
+        } else {
+            // For directives without parameters (e.g., @else)
+            return preg_replace_callback(
+                '/' . preg_quote($pattern, '/') . '(?![a-zA-Z0-9_])/',
+                function() use ($callback) {
+                    return $callback();
+                },
+                $template
             );
         }
-
-        return $content;
     }
 
-    private function addLineNumbers(string $content, string $templatePath): string
+    /**
+     * Ensures a directory exists
+     */
+    private function ensureDirectoryExists(string $path): void
     {
-        return "<?php /* Source: {$templatePath} */ ?>\n".
-               preg_replace('/\n/', "\n<?php /* Line: \$__line__ */ ?>\n", $content);
-    }
-
-    private function compileComments(string $content): string
-    {
-        return preg_replace('/{{--(.*?)--}}/s', '', $content);
-    }
-
-    private function compileDirectives(string $content): string
-    {
-        $patterns = [
-            '/@if\s*\((.*)\)/' => '<?php if($1): ?>',
-            '/@elseif\s*\((.*)\)/' => '<?php elseif($1): ?>',
-            '/@else/' => '<?php else: ?>',
-            '/@endif/' => '<?php endif; ?>',
-            '/@foreach\s*\((.*)\)/' => '<?php foreach($1): ?>',
-            '/@endforeach/' => '<?php endforeach; ?>',
-            '/@for\s*\((.*)\)/' => '<?php for($1): ?>',
-            '/@endfor/' => '<?php endfor; ?>',
-            '/@while\s*\((.*)\)/' => '<?php while($1): ?>',
-            '/@endwhile/' => '<?php endwhile; ?>',
-            '/@extends\([\'"](.*?)[\'"]\)/' => '<?php $this->extend("$1"); ?>',
-            '/@section\([\'"](.*?)[\'"]\)/' => '<?php $this->startSection("$1"); ?>',
-            '/@appendSection\([\'"](.*?)[\'"]\)/' => '<?php $this->startSection("$1", "append"); ?>',
-            '/@prependSection\([\'"](.*?)[\'"]\)/' => '<?php $this->startSection("$1", "prepend"); ?>',
-            '/@endsection/' => '<?php $this->endSection(); ?>',
-            '/@yield\([\'"](.*?)[\'"]\)/' => '<?= $this->yieldSection("$1") ?>',
-            '/@include\([\'"](.*?)[\'"]\)/' => '<?php include $this->compile("{$this->viewsPath}/$1.ace.php"); ?>',
-            '/@component\([\'"](.*?)[\'"]\)/' => '<?php $this->startComponent("$1"); ?>',
-            '/@endcomponent/' => '<?php $this->endComponent(); ?>',
-            '/@slot\([\'"](.*?)[\'"]\)/' => '<?php $this->slot("$1"); ?>',
-            '/@endslot/' => '<?php $this->endSlot(); ?>',
-            '/@lang\([\'"](.*?)[\'"]\)/' => '<?= $this->translate("$1") ?>',
-            '/@csrf/' => '<?= $this->generateCsrfField() ?>',
-            '/@csrf_meta/' => '<?= $this->generateCsrfMetaTag() ?>',
-        ];
-
-        return preg_replace(array_keys($patterns), array_values($patterns), $content);
-    }
-
-    private function compileUnescaped(string $content): string
-    {
-        return preg_replace([
-            '/\{\{\s*(.+?)\s*\}\}/',
-            '/\{!!\s*(.+?)\s*!!\}/',
-        ], [
-            '<?= htmlspecialchars($1, ENT_QUOTES) ?>',
-            '<?= $1 ?>',
-        ], $content);
-    }
-
-    private function compilePhp(string $content): string
-    {
-        return preg_replace('/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', '<?php $1$2$3 ?>', $content);
-    }
-
-    public function extend(string $view): void
-    {
-        $this->parentView = $view;
-    }
-
-    public function startSection(string $name, string $mode = 'replace'): void
-    {
-        $this->sectionStack[] = ['name' => $name, 'mode' => $mode];
-        ob_start();
-    }
-
-    public function endSection(): void
-    {
-        if (empty($this->sectionStack)) {
-            throw new AceException("No active section to end.");
-        }
-
-        $section = array_pop($this->sectionStack);
-        $content = ob_get_clean();
-
-        if ($section['mode'] === 'append') {
-            $this->sections[$section['name']] = ($this->sections[$section['name']] ?? '').$content;
-        } elseif ($section['mode'] === 'prepend') {
-            $this->sections[$section['name']] = $content.($this->sections[$section['name']] ?? '');
-        } else {
-            $this->sections[$section['name']] = $content;
+        if (!is_dir($path)) {
+            if (!mkdir($path, 0755, true) && !is_dir($path)) {
+                throw new AceException("Failed to create directory: $path");
+            }
         }
     }
 
-    public function yieldSection(string $name): string
+    /**
+     * Registers all template directives
+     */
+    private function registerDirectives(): void
     {
-        return $this->sections[$name] ?? '';
-    }
+        // Control structures
+        $this->directives['@if'] = fn($expr) => '<?php if(' . $expr . '): ?>';
+        $this->directives['@else'] = fn() => '<?php else: ?>';
+        $this->directives['@elseif'] = fn($expr) => '<?php elseif(' . $expr . '): ?>';
+        $this->directives['@endif'] = fn() => '<?php endif; ?>';
 
-    public function startComponent(string $name): void
-    {
-        array_push($this->componentStack, $name);
-        $this->slots[$name] = ['__default__' => ''];
-        ob_start();
-    }
+        // Loops
+        $this->directives['@foreach'] = fn($expr) => '<?php foreach(' . $expr . '): ?>';
+        $this->directives['@endforeach'] = fn() => '<?php endforeach; ?>';
+        $this->directives['@for'] = fn($expr) => '<?php for(' . $expr . '): ?>';
+        $this->directives['@endfor'] = fn() => '<?php endfor; ?>';
+        $this->directives['@while'] = fn($expr) => '<?php while(' . $expr . '): ?>';
+        $this->directives['@endwhile'] = fn() => '<?php endwhile; ?>';
 
-    public function endComponent(): void
-    {
-        $name = array_pop($this->componentStack);
-        $content = ob_get_clean();
-        $this->slots[$name]['__default__'] = $content;
-        echo $this->render($name, ['slots' => $this->slots[$name]]);
-        unset($this->slots[$name]);
-    }
+        // Switch statements
+        $this->directives['@switch'] = fn($expr) => '<?php switch(' . $expr . '): ?>';
+        $this->directives['@case'] = fn($expr) => '<?php case ' . $expr . ': ?>';
+        $this->directives['@break'] = fn() => '<?php break; ?>';
+        $this->directives['@default'] = fn() => '<?php default: ?>';
+        $this->directives['@endswitch'] = fn() => '<?php endswitch; ?>';
 
-    public function slot(string $name): void
-    {
-        array_push($this->componentStack, $name);
-        ob_start();
-    }
+        // Template inheritance
+        $this->directives['@extends'] = fn($expr) => '<?php $this->setLayout(' . $expr . '); ?>';
+        $this->directives['@section'] = fn($expr) => '<?php $this->start(' . $expr . '); ?>';
+        $this->directives['@endsection'] = fn() => '<?php $this->end(); ?>';
+        $this->directives['@yield'] = fn($expr) => '<?php $this->content(' . $expr . '); ?>';
 
-    public function endSlot(): void
-    {
-        $slotName = array_pop($this->componentStack);
-        $componentName = end($this->componentStack);
-        $this->slots[$componentName][$slotName] = ob_get_clean();
-    }
+        // Authentication shortcuts
+        $this->directives['@auth'] = fn() => '<?php if(function_exists("auth") && auth()->check()): ?>';
+        $this->directives['@endauth'] = fn() => '<?php endif; ?>';
+        $this->directives['@guest'] = fn() => '<?php if(function_exists("auth") && auth()->guest()): ?>';
+        $this->directives['@endguest'] = fn() => '<?php endif; ?>';
 
-    private function translate(string $key): string
-    {
-        return $this->translator ? htmlspecialchars(($this->translator)($key), ENT_QUOTES) : $key;
-    }
+        // Conditionals
+        $this->directives['@isset'] = fn($expr) => '<?php if(isset(' . $expr . ')): ?>';
+        $this->directives['@endisset'] = fn() => '<?php endif; ?>';
+        $this->directives['@empty'] = fn($expr) => '<?php if(empty(' . $expr . ')): ?>';
+        $this->directives['@endempty'] = fn() => '<?php endif; ?>';
 
-    private function generateCsrfField(): string
-    {
-        if (!$this->csrfTokenGenerator) {
-            throw new AceException("CSRF token generator not configured.");
-        }
+        // CSRF protection
+        $this->directives['@csrf'] = fn() => '<?php if(function_exists("csrf_token")): ?><input type="hidden" name="csrf_token" value="<?= csrf_token(); ?>"><?php endif; ?>';
 
-        return $this->csrfTokenGenerator->field();
-    }
-
-    private function generateCsrfMetaTag(): string
-    {
-        if (!$this->csrfTokenGenerator) {
-            throw new AceException("CSRF token generator not configured.");
-        }
-
-        return $this->csrfTokenGenerator->metaTag();
-    }
-
-    private function formatError(Throwable $e, string $templatePath): string
-    {
-        if (!$this->debug) {
-            return "Rendering error occurred.";
-        }
-
-        $lines = file($templatePath);
-        $line = $e->getLine() - 2; // Account for line number comments
-        $context = '';
-
-        for ($i = max(0, $line - 3); $i < min(count($lines), $line + 3); $i++) {
-            $context .= ($i + 1).': '.$lines[$i];
-        }
-
-        return sprintf(
-            "Error in %s:%d\n%s\n\nTemplate Context:\n%s",
-            $templatePath,
-            $line,
-            $e->getMessage(),
-            $context
-        );
+        // Include directive
+        $this->directives['@include'] = fn($expr) => '<?php $this->partial(' . $expr . '); ?>';
     }
 }
