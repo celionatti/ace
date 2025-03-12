@@ -12,13 +12,29 @@ declare(strict_types=1);
 
 namespace Ace\ace\Exception;
 
-use Exception;
-use Throwable;
+use ErrorException;
 
-class AceException extends Exception
+class AceException extends ErrorException
 {
-    public function __construct(string $message = "", int $code = 0, ?Exception $previous = null)
+    public function getFormattedMessage(): string
     {
-        parent::__construct($message, $code, $previous);
+        return sprintf(
+            "[%s] %s (Line %s in %s)",
+            $this->getSeverityAsString(),
+            $this->getMessage(),
+            $this->getLine(),
+            $this->getFile()
+        );
+    }
+
+    public function getSeverityAsString(): string
+    {
+        switch ($this->getSeverity()) {
+            case E_ERROR: return 'E_ERROR';
+            case E_WARNING: return 'E_WARNING';
+            case E_NOTICE: return 'E_NOTICE';
+            // Add other error types as needed
+            default: return 'UNKNOWN_ERROR';
+        }
     }
 }

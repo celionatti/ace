@@ -49,6 +49,7 @@ class Ace
 
     private function initializeCore()
     {
+        require __DIR__ . "/load.php";
         require __DIR__ . "/functions.php";
         $this->container->singleton(Config::class, fn() => new Config());
         $this->container->singleton(Request::class, function () {
