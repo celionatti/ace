@@ -160,6 +160,10 @@ class View
 
     /**
      * Includes a partial template
+     *
+     * @param string $path Path to the partial template
+     * @param array $params Parameters to pass to the partial
+     * @return void
      */
     public function partial(string $path, array $params = []): void
     {
@@ -169,8 +173,75 @@ class View
             throw new AceException("Partial view not found: $path", 404);
         }
 
+        // Get the content of the partial
+        $content = file_get_contents($fullPath);
+
+        // Compile the content
+        $compiledContent = $this->compileTemplate($content);
+
+        // Extract parameters into local scope
         extract($params);
-        include $fullPath;
+
+        // Evaluate the compiled content
+        ob_start();
+        try {
+            eval('?>' . $compiledContent);
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw new AceException("Error rendering partial $path: " . $e->getMessage());
+        }
+
+        // Output the rendered content
+        echo ob_get_clean();
+    }
+
+    /**
+     * Renders a component with slots
+     *
+     * @param string $name Component name
+     * @param array $data Data to pass to the component
+     * @param array $slots Slots/sections to pass to the component
+     * @return void
+     */
+    public function component(string $name, array $data = [], array $slots = []): void
+    {
+        $componentPath = $this->resolvePath('components' . DIRECTORY_SEPARATOR . $name);
+
+        if (!file_exists($componentPath)) {
+            throw new AceException("Component not found: $name", 404);
+        }
+
+        // Store the original sections
+        $originalSections = $this->sections;
+
+        // Set up the component slots
+        $this->sections = $slots;
+
+        // Extract data for the component
+        extract($data);
+
+        // Include the component
+        include $componentPath;
+
+        // Restore original sections
+        $this->sections = $originalSections;
+    }
+
+    /**
+     * Parses the component render directive
+     *
+     * @param string $expr Component expression
+     * @return string
+     */
+    private function parseComponentRender(string $expr): string
+    {
+        // Extract component name and data
+        preg_match('/([^,]+)(?:,\s*(\{.*\}))?/', $expr, $matches);
+
+        $component = $matches[1];
+        $data = isset($matches[2]) ? $matches[2] : '[]';
+
+        return '<?php $this->component(' . $component . ', ' . $data . ', $this->sections); ?>';
     }
 
     /**
@@ -379,5 +450,14 @@ class View
 
         // Include directive
         $this->directives['@include'] = fn($expr) => '<?php $this->partial(' . $expr . '); ?>';
+
+        // Component directives
+        $this->directives['@component'] = fn($expr) => '<?php $this->start("__component__"); ?>';
+        $this->directives['@endcomponent'] = fn() => '<?php $this->end(); $componentContent = $this->sections["__component__"]; unset($this->sections["__component__"]); ?>';
+        $this->directives['@slot'] = fn($expr) => '<?php $this->start(' . $expr . '); ?>';
+        $this->directives['@endslot'] = fn() => '<?php $this->end(); ?>';
+
+        // Render component directive
+        $this->directives['@render'] = fn($expr) => $this->parseComponentRender($expr);
     }
 }

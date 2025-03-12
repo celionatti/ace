@@ -15,6 +15,9 @@
 @endsection
 
 @section('content')
+
+@include('header')
+
 <div class="hero-section">
     <h2>Welcome, {{ $user }}</h2>
     <p>Thank you for visiting our website!</p>
