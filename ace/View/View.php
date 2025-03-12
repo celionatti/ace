@@ -133,6 +133,11 @@ class View
             throw new AceException("Section key cannot be empty");
         }
 
+        // End any current section before starting a new one
+        if ($this->currentSection !== null) {
+            $this->end();
+        }
+
         $this->currentSection = $key;
         ob_start();
     }
@@ -143,7 +148,8 @@ class View
     public function end(): void
     {
         if ($this->currentSection === null) {
-            throw new AceException("No active section to end");
+            // throw new AceException("No active section to end");
+            return;
         }
 
         $this->sections[$this->currentSection] = ob_get_clean();
@@ -217,31 +223,29 @@ class View
         // Set up the component slots
         $this->sections = $slots;
 
+        // Get the content of the component
+        $content = file_get_contents($componentPath);
+
+        // Compile the content
+        $compiledContent = $this->compileTemplate($content);
+
         // Extract data for the component
         extract($data);
 
-        // Include the component
-        include $componentPath;
+        // Evaluate the compiled content
+        ob_start();
+        try {
+            eval('?>' . $compiledContent);
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw new AceException("Error rendering component $name: " . $e->getMessage());
+        }
+
+        // Output the rendered content
+        echo ob_get_clean();
 
         // Restore original sections
         $this->sections = $originalSections;
-    }
-
-    /**
-     * Parses the component render directive
-     *
-     * @param string $expr Component expression
-     * @return string
-     */
-    private function parseComponentRender(string $expr): string
-    {
-        // Extract component name and data
-        preg_match('/([^,]+)(?:,\s*(\{.*\}))?/', $expr, $matches);
-
-        $component = $matches[1];
-        $data = isset($matches[2]) ? $matches[2] : '[]';
-
-        return '<?php $this->component(' . $component . ', ' . $data . ', $this->sections); ?>';
     }
 
     /**
@@ -450,14 +454,5 @@ class View
 
         // Include directive
         $this->directives['@include'] = fn($expr) => '<?php $this->partial(' . $expr . '); ?>';
-
-        // Component directives
-        $this->directives['@component'] = fn($expr) => '<?php $this->start("__component__"); ?>';
-        $this->directives['@endcomponent'] = fn() => '<?php $this->end(); $componentContent = $this->sections["__component__"]; unset($this->sections["__component__"]); ?>';
-        $this->directives['@slot'] = fn($expr) => '<?php $this->start(' . $expr . '); ?>';
-        $this->directives['@endslot'] = fn() => '<?php $this->end(); ?>';
-
-        // Render component directive
-        $this->directives['@render'] = fn($expr) => $this->parseComponentRender($expr);
     }
 }

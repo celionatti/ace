@@ -16,8 +16,10 @@ class HomeController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
-        return $this->view('index');
+        $this->view->setLayout('default');
+        $this->view->setTitle("Home Page");
+        return $this->render('welcome');
     }
 }

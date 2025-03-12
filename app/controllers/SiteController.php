@@ -11,7 +11,8 @@ class SiteController extends Controller
 {
     public function index($request, $response)
     {
-        $this->view->setLayout('default');
+        $this->view->setLayout('test');
+        $this->view->setTitle("Testing Page");
         $user = new User();
         // echo "<pre>";
         // var_dump($user->paginate());
@@ -22,15 +23,11 @@ class SiteController extends Controller
             'isLoggedIn' => true, // Change to false to test @if
             'user' => 'AceUser',
             'articles' => ['First Post', 'Second Post', 'Third Post'],
-            'content' => '<b>Hello</b>'
+            'content' => '<b>Hello</b>',
+            'flashMessage' => ['type' => 'danger', 'message' => 'Welcome to the ace community.']
         ];
 
 
-        $this->view->render("home", $data);
-    }
-
-    public function dashboard($request, $response)
-    {
-        var_dump("Welcome to the Ace Framework Admin Dashboard Controller");
+        $this->view->render("test/home", $data);
     }
 }

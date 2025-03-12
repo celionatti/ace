@@ -16,4 +16,7 @@
     </nav>
 
     <h1>{{ $this->getHeader() }}</h1>
+    <div class="user-profile">
+        Welcome, {{ $user['name'] ?? 'Admin' }}
+    </div>
 </header>
