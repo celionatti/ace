@@ -12,10 +12,9 @@ declare(strict_types=1);
 
 namespace Ace\ace\Exception;
 
-use Exception;
-use Throwable;
+use Ace\ace\Exception\AceException;
 
-class ConfigException extends Exception
+class ConfigException extends AceException
 {
 
 }

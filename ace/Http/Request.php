@@ -251,4 +251,23 @@ class Request
     {
         return $this->errors;
     }
+
+    public function getDebugInfo(): array
+    {
+        return [
+            'url' => $this->getPath(),
+            'method' => $this->getMethod(),
+            'query_params' => $this->queryParams,
+            'body_params' => $this->bodyParams,
+            'headers' => $this->headers,
+            'cookies' => $this->cookies,
+            'files' => array_map(function($file) {
+                return [
+                    'name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'type' => $file->getClientMimeType()
+                ];
+            }, $this->files)
+        ];
+    }
 }

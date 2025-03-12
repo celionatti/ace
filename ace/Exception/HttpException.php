@@ -12,10 +12,9 @@ declare(strict_types=1);
 
 namespace Ace\ace\Exception;
 
-use Exception;
-use Throwable;
+use Ace\ace\Exception\AceException;
 
-class HttpException extends Exception
+class HttpException extends AceException
 {
 
 }

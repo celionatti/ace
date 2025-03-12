@@ -90,6 +90,25 @@ class ExceptionHandler
         exit(1);
     }
 
+    public function handleHttpException(Throwable $exception, Request $request): void
+    {
+        $this->logException($exception);
+
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        // Add request info to the error data
+        $requestData = $this->getRequestData($request);
+
+        if ($this->environment === 'development') {
+            $this->renderDevelopmentError($exception, $requestData);
+        } else {
+            $this->renderProductionError($exception);
+        }
+        exit(1);
+    }
+
     public function handleShutdown(): void
     {
         $error = error_get_last();
@@ -160,10 +179,10 @@ class ExceptionHandler
 
     private function getErrorCode(Throwable $exception): string
     {
-        if ($exception instanceof AceException) {
+        if ($exception instanceof AceException && method_exists($exception, 'getErrorCode')) {
             return $exception->getErrorCode();
         }
-        return 'E' . $exception->getCode();
+        return 'E-' . $exception->getCode();
     }
 
     private function getStackFrames(Throwable $exception): array
@@ -227,8 +246,13 @@ class ExceptionHandler
         return $snippet;
     }
 
-    private function getRequestData(): array
+    private function getRequestData(?Request $request = null): array
     {
+        if ($request && method_exists($request, 'getDebugInfo')) {
+            return $request->getDebugInfo();
+        }
+
+        // Fallback to original behavior
         return [
             'url' => $_SERVER['REQUEST_URI'] ?? '',
             'method' => $_SERVER['REQUEST_METHOD'] ?? '',
