@@ -1,5 +1,7 @@
 {
     "name": "celionatti/ace",
+    "description": "A lightweight PHP framework.",
+    "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -15,8 +17,5 @@
     "require": {
         "vlucas/phpdotenv": "^5.6",
         "psr/container": "^2.0"
-    },
-    "require-dev": {
-        "symfony/var-dumper": "^7.2"
     }
 }
