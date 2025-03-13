@@ -10,13 +10,13 @@ declare(strict_types=1);
  * =====================================================
  */
 
-namespace Ace\ace\Authentication;
+namespace Ace\Authentication;
 
 use DateTime;
 use PDO;
 use PDOException;
 use Exception;
-use Ace\ace\Session\Handlers\DefaultSessionHandler;
+use Ace\Session\Handlers\DefaultSessionHandler;
 
 class Authentication
 {

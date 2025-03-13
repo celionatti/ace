@@ -64,7 +64,15 @@ class Router
     {
         $method = $request->getMethod();
         $path = $request->getPath();
-        $routes = $this->routesByMethod[$method] ?? [];
+
+        // Check if the method exists in the routesByMethod array
+        if (!isset($this->routesByMethod[$method])) {
+            // Could add logging here to debug
+            // For example: error_log("No routes found for method: $method, path: $path");
+            throw new HttpException("No routes registered for method: $method", 404);
+        }
+
+        $routes = $this->routesByMethod[$method];
 
         foreach ($routes as $route) {
             if ($route->matches($method, $path)) {
@@ -77,7 +85,9 @@ class Router
             }
         }
 
-        throw new HttpException('Route not found', 404);
+        // Could add logging here to debug
+        // error_log("Path '$path' did not match any routes for method: $method");
+        throw new HttpException("Route not found for path: $path", 404);
     }
 
     /**
