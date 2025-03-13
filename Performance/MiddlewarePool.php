@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Performance;
+namespace Ace\Performance;
 
-use Ace\ace\Container\Container;
+use Ace\Container\Container;
 
 class MiddlewarePool
 {

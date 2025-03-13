@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Model;
+namespace Ace\Database\Model;
 
-use Ace\ace\Database\Database;
-use Ace\ace\Database\QueryBuilder\QueryBuilder;
-use Ace\ace\Validation\Validator;
-use Ace\ace\Database\Trait\Pagination;
+use Ace\Database\Database;
+use Ace\Database\QueryBuilder\QueryBuilder;
+use Ace\Validation\Validator;
+use Ace\Database\Trait\Pagination;
 
 abstract class Model
 {

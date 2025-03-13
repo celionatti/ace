@@ -8,9 +8,9 @@ declare(strict_types=1);
  * ================================
  */
 
-namespace Ace\ace\View;
+namespace Ace\View;
 
-use Ace\ace\Exception\AceException;
+use Ace\Exception\AceException;
 
 class AceView
 {

@@ -8,10 +8,10 @@ declare(strict_types=1);
  * =================================
  */
 
-namespace Ace\ace\Http;
+namespace Ace\Http;
 
-use Ace\ace\Validation\Validator;
-use Ace\ace\Exception\SecurityException;
+use Ace\Validation\Validator;
+use Ace\Exception\SecurityException;
 
 class Request
 {

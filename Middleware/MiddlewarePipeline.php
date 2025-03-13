@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Middleware;
+namespace Ace\Middleware;
 
-use Ace\ace\Http\Request;
-use Ace\ace\Container\Container;
-use Ace\ace\Exception\AceException;
-use Ace\ace\Security\MiddlewareSignature;
-use Ace\ace\Performance\MiddlewarePool;
+use Ace\Http\Request;
+use Ace\Container\Container;
+use Ace\Exception\AceException;
+use Ace\Security\MiddlewareSignature;
+use Ace\Performance\MiddlewarePool;
 
 class MiddlewarePipeline
 {

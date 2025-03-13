@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Logger;
+namespace Ace\Logger;
 
-use Ace\ace\Exception\DatabaseException;
+use Ace\Exception\DatabaseException;
 
 class Logger
 {

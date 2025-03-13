@@ -8,9 +8,9 @@ declare(strict_types=1);
  * ==================================
  */
 
-namespace Ace\ace\Session\Handlers;
+namespace Ace\Session\Handlers;
 
-use Ace\ace\Session\SessionHandler;
+use Ace\Session\SessionHandler;
 
 class DefaultSessionHandler extends SessionHandler
 {

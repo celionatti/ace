@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Http;
+namespace Ace\Http;
 
-use Ace\ace\Exception\HttpException;
+use Ace\Exception\HttpException;
 
 class Response
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Router;
+namespace Ace\Router;
 
-use Ace\ace\Exception\HttpException;
-use Ace\ace\Http\Request;
-use Ace\ace\Router\Route;
+use Ace\Exception\HttpException;
+use Ace\Http\Request;
+use Ace\Router\Route;
 
 class RouteGroup
 {

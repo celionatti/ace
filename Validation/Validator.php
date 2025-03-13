@@ -10,10 +10,10 @@ declare(strict_types=1);
  * ==================================================
  */
 
-namespace Ace\ace\Validation;
+namespace Ace\Validation;
 
-use Ace\ace\Database\Database;
-use Ace\ace\Exception\AceException;
+use Ace\Database\Database;
+use Ace\Exception\AceException;
 
 class Validator
 {

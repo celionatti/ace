@@ -8,9 +8,9 @@ declare(strict_types=1);
  * ==================================
  */
 
-namespace Ace\ace\Session;
+namespace Ace\Session;
 
-use Ace\ace\Session\SessionInterface;
+use Ace\Session\SessionInterface;
 
 abstract class SessionHandler implements SessionInterface
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Trait;
+namespace Ace\Database\Trait;
 
-use Ace\ace\Database\Database;
-use Ace\ace\Database\QueryBuilder\QueryBuilder;
+use Ace\Database\Database;
+use Ace\Database\QueryBuilder\QueryBuilder;
 
 trait Pagination
 {
@@ -126,8 +126,8 @@ trait Pagination
             ];
         } catch (\Exception $e) {
             // Log the error
-            if (class_exists('\Ace\ace\Logger\Logger')) {
-                \Ace\ace\Logger\Logger::exception($e);
+            if (class_exists('\Ace\Logger\Logger')) {
+                \Ace\Logger\Logger::exception($e);
             }
 
             return self::emptyPaginationResult($perPage, $page);

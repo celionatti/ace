@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Command\Commands;
+namespace Ace\Command\Commands;
 
-use Ace\ace\Command\Command;
-use Ace\ace\Command\TermUI;
+use Ace\Command\Command;
+use Ace\Command\TermUI;
 
 class ControllerCommand extends Command
 {

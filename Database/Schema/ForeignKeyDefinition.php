@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Schema;
+namespace Ace\Database\Schema;
 
-use Ace\ace\Database\Schema\Blueprint;
+use Ace\Database\Schema\Blueprint;
 
 class ForeignKeyDefinition
 {

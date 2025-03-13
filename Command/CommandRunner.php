@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Command;
+namespace Ace\Command;
 
-use Ace\ace\Command\Command;
+use Ace\Command\Command;
 
 class CommandRunner
 {

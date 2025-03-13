@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database;
+namespace Ace\Database;
 
-use Ace\ace\Database\Interface\DatabaseInterface;
-use Ace\ace\ErrorHandler\ErrorHandler;
-use Ace\ace\Logger\Logger;
+use Ace\Database\Interface\DatabaseInterface;
+use Ace\ErrorHandler\ErrorHandler;
+use Ace\Logger\Logger;
 
 abstract class AbstractDatabase implements DatabaseInterface
 {

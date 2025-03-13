@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Ace\ace\Component;
+namespace Ace\Component;
 
-use Ace\ace\Ace;
-use Ace\ace\Exception\AceException;
-use Ace\ace\View\View;
+use Ace\Ace;
+use Ace\Exception\AceException;
+use Ace\View\View;
 use ReflectionClass;
 
 abstract class Component

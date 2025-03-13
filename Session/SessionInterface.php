@@ -8,7 +8,7 @@ declare(strict_types=1);
  * ==================================
  */
 
-namespace Ace\ace\Session;
+namespace Ace\Session;
 
 interface SessionInterface
 {

@@ -8,10 +8,10 @@ declare(strict_types=1);
  * ==================================
  */
 
-namespace Ace\ace\Session\Handlers;
+namespace Ace\Session\Handlers;
 
 use PDO;
-use Ace\ace\Session\SessionHandler;
+use Ace\Session\SessionHandler;
 
 class DatabaseSessionHandler extends SessionHandler
 {

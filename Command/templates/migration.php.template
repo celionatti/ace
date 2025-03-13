@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Ace\database\migrations;
 
-use Ace\ace\Database\Migration\Migration;
-use Ace\ace\Database\Schema\Schema;
+use Ace\Database\Migration\Migration;
+use Ace\Database\Schema\Schema;
 
 class {{MigrationName}} extends Migration
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Helpers;
+namespace Ace\Helpers;
 
 class Str
 {

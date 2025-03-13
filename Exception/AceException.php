@@ -10,7 +10,7 @@ declare(strict_types=1);
  * ==============================================
  */
 
-namespace Ace\ace\Exception;
+namespace Ace\Exception;
 
 use ErrorException;
 

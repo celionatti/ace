@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Config;
+namespace Ace\Config;
 
 class DatabaseConfig
 {

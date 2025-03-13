@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Schema;
+namespace Ace\Database\Schema;
 
 class ColumnDefinition
 {

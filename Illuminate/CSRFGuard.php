@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\Ace\Illuminate; // Adjusted namespace casing
+namespace Ace\Illuminate; // Adjusted namespace casing
 
 class CSRFGuard
 {

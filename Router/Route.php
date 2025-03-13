@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Router;
+namespace Ace\Router;
 
 class Route
 {

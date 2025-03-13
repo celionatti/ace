@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Config;
+namespace Ace\Config;
 
-use Ace\ace\Exception\ConfigException;
+use Ace\Exception\ConfigException;
 
 class Config
 {

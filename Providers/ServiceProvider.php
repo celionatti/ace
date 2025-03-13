@@ -8,7 +8,7 @@ declare(strict_types=1);
  * =====================================
  */
 
-namespace Ace\ace\Providers;
+namespace Ace\Providers;
 
 abstract class ServiceProvider
 {

@@ -10,11 +10,11 @@ declare(strict_types=1);
  * ==============================================
  */
 
-namespace Ace\ace\Exception\Handler;
+namespace Ace\Exception\Handler;
 
 use Throwable;
-use Ace\ace\Http\Request;
-use Ace\ace\Exception\AceException;
+use Ace\Http\Request;
+use Ace\Exception\AceException;
 
 class ExceptionHandler
 {

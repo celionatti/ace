@@ -8,12 +8,12 @@ declare(strict_types=1);
  * =====================================
  */
 
-namespace Ace\ace\Container;
+namespace Ace\Container;
 
 use Closure;
 use Psr\Container\ContainerInterface;
-use Ace\ace\Exception\AceException;
-use Ace\ace\Exception\ContainerNotFoundException;
+use Ace\Exception\AceException;
+use Ace\Exception\ContainerNotFoundException;
 
 class Container implements ContainerInterface
 {

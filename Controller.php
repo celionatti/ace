@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace;
+namespace Ace;
 
-use Ace\ace\View\View;
-use Ace\ace\Illuminate\CSRFGuard;
+use Ace\View\View;
+use Ace\Illuminate\CSRFGuard;
 
 abstract class Controller
 {

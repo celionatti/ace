@@ -8,10 +8,10 @@ declare(strict_types=1);
  * =====================================
  */
 
-namespace Ace\ace\Providers\Services;
+namespace Ace\Providers\Services;
 
-use Ace\ace\Providers\ServiceProvider;
-use Ace\ace\Router\Router;
+use Ace\Providers\ServiceProvider;
+use Ace\Router\Router;
 
 class RouteServiceProvider extends ServiceProvider
 {

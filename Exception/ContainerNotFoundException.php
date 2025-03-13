@@ -1,9 +1,9 @@
 <?php
 
-namespace Ace\ace\Exception;
+namespace Ace\Exception;
 
 use Psr\Container\NotFoundExceptionInterface;
-use Ace\ace\Exception\AceException;
+use Ace\Exception\AceException;
 
 class ContainerNotFoundException extends AceException implements NotFoundExceptionInterface
 {

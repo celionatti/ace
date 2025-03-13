@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\ErrorHandler;
+namespace Ace\ErrorHandler;
 
-use Ace\ace\Logger\Logger;
+use Ace\Logger\Logger;
 
 class ErrorHandler
 {

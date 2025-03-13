@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\QueryBuilder;
+namespace Ace\Database\QueryBuilder;
 
-use Ace\ace\Database\Interface\DatabaseInterface;
+use Ace\Database\Interface\DatabaseInterface;
 
 class QueryBuilder
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database;
+namespace Ace\Database;
 
-use Ace\ace\Database\Interface\DatabaseInterface;
-use Ace\ace\Database\Factory\DatabaseFactory;
-use Ace\ace\Logger\Logger;
+use Ace\Database\Interface\DatabaseInterface;
+use Ace\Database\Factory\DatabaseFactory;
+use Ace\Logger\Logger;
 
 class Database
 {

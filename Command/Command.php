@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Command;
+namespace Ace\Command;
 
 abstract class Command
 {

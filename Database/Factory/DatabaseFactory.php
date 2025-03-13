@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Factory;
+namespace Ace\Database\Factory;
 
-use Ace\ace\Database\Interface\DatabaseInterface;
-use Ace\ace\Database\Drivers\MySQLDatabase;
-use Ace\ace\Database\Drivers\PostgreSQLDatabase;
-use Ace\ace\Database\Drivers\SQLiteDatabase;
-use Ace\ace\Logger\Logger;
+use Ace\Database\Interface\DatabaseInterface;
+use Ace\Database\Drivers\MySQLDatabase;
+use Ace\Database\Drivers\PostgreSQLDatabase;
+use Ace\Database\Drivers\SQLiteDatabase;
+use Ace\Logger\Logger;
 
 class DatabaseFactory
 {

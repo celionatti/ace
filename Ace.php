@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace;
+namespace Ace;
 
-use Ace\ace\Http\Request;
-use Ace\ace\Http\Response;
-use Ace\ace\Router\Router;
-use Ace\ace\Container\Container;
-use Ace\ace\Exception\HttpException;
-use Ace\ace\Exception\AceException;
-use Ace\ace\Config\Config;
-use Ace\ace\Database\Database;
-use Ace\ace\View\View;
-use Ace\ace\Exception\Handler\ExceptionHandler;
+use Ace\Http\Request;
+use Ace\Http\Response;
+use Ace\Router\Router;
+use Ace\Container\Container;
+use Ace\Exception\HttpException;
+use Ace\Exception\AceException;
+use Ace\Config\Config;
+use Ace\Database\Database;
+use Ace\View\View;
+use Ace\Exception\Handler\ExceptionHandler;
 
 class Ace
 {
@@ -110,27 +110,6 @@ class Ace
     {
         return $this->router;
     }
-
-    // public function run(): void
-    // {
-    //     if (!$this->booted) {
-    //         throw new AceException("Application not booted properly");
-    //     }
-
-    //     try {
-    //         $this->verifyAceKey();
-    //         $this->dispatch();
-    //     } catch (\Throwable $e) {
-    //         // Log the exception if logging is enabled
-    //         if ($this->container->has('Logger')) {
-    //             $logger = $this->container->get('Logger');
-    //             $logger->error($e->getMessage(), ['exception' => $e]);
-    //         }
-
-    //         // Let the exception handler handle it
-    //         $this->exceptionHandler->handleException($e);
-    //     }
-    // }
 
     public function run(): void
     {

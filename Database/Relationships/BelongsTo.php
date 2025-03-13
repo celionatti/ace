@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Relationships;
+namespace Ace\Database\Relationships;
 
 class BelongsTo
 {

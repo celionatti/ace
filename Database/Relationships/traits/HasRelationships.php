@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Relationships\traits;
+namespace Ace\Database\Relationships\traits;
 
 trait HasRelationships
 {

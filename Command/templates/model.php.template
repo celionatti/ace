@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Ace\app\models;
 
-use Ace\ace\Database\Model\Model;
-use Ace\ace\Database\Interface\ModelInterface;
-use Ace\ace\Database\QueryBuilder\QueryBuilder;
+use Ace\Database\Model\Model;
+use Ace\Database\Interface\ModelInterface;
+use Ace\Database\QueryBuilder\QueryBuilder;
 
 class {{ModelName}} extends Model implements ModelInterface
 {

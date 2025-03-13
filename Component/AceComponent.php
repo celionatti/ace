@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Ace\ace\Component;
+namespace Ace\Component;
 
-use Ace\ace\Ace;
-use Ace\ace\View\View;
+use Ace\Ace;
+use Ace\View\View;
 use ReflectionClass;
 use ReflectionException;
 

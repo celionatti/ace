@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Drivers;
+namespace Ace\Database\Drivers;
 
-use Ace\ace\Database\AbstractDatabase;
+use Ace\Database\AbstractDatabase;
 
 class SQLiteDatabase extends AbstractDatabase
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Ace\ace\Database\Interface;
+namespace Ace\Database\Interface;
 
 use JsonSerializable;
-use Ace\ace\Database\QueryBuilder\QueryBuilder;
+use Ace\Database\QueryBuilder\QueryBuilder;
 
 interface ModelInterface extends JsonSerializable
 {

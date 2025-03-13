@@ -10,9 +10,9 @@ declare(strict_types=1);
  * ==============================================
  */
 
-namespace Ace\ace\Exception;
+namespace Ace\Exception;
 
-use Ace\ace\Exception\AceException;
+use Ace\Exception\AceException;
 
 class ConfigException extends AceException
 {

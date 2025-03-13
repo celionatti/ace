@@ -1,6 +1,6 @@
 <?php
 
-namespace Ace\ace\Pagination;
+namespace Ace\Pagination;
 
 use Exception;
 
