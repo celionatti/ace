@@ -15,6 +15,7 @@ abstract class Controller
     {
         $this->view = new View(BASE_PATH . '/resources/views');
         // $this->view->setCsrfTokenGenerator(new CSRFGuard());
+        $this->onConstruct();
     }
 
     protected function render(string $template, array $data = [])
@@ -29,4 +30,7 @@ abstract class Controller
         echo json_encode($data);
         exit;
     }
+
+    public function onConstruct()
+    {}
 }
