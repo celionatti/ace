@@ -148,11 +148,11 @@ class ControllerCommand extends Command
 
 declare(strict_types=1);
 
-namespace Ace\app\controllers;
+namespace App\app\controllers;
 
-use Ace\ace\Controller;
-use Ace\ace\Http\Request;
-use Ace\ace\Http\Response;
+use Ace\Controller;
+use Ace\Http\Request;
+use Ace\Http\Response;
 
 class {{ControllerName}} extends Controller
 {
@@ -162,9 +162,9 @@ class {{ControllerName}} extends Controller
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
-        return $this->view('index');
+        return $this->render('index');
     }
 }
 EOT;
@@ -180,12 +180,12 @@ EOT;
 
 declare(strict_types=1);
 
-namespace Ace\app\controllers;
+namespace App\app\controllers;
 
-use Ace\ace\Controller;
-use Ace\ace\Http\Request;
-use Ace\ace\Http\Response;
-use Ace\app\models\{{ModelName}};
+use Ace\Controller;
+use Ace\Http\Request;
+use Ace\Http\Response;
+use App\app\models\{{ModelName}};
 
 class {{ControllerName}} extends Controller
 {
@@ -195,11 +195,11 @@ class {{ControllerName}} extends Controller
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $items = {{ModelName}}::all();
 
-        return $this->view('{{ModelName}}/index', [
+        return $this->render('{{ModelName}}/index', [
             'items' => $items,
         ]);
     }
@@ -210,9 +210,9 @@ class {{ControllerName}} extends Controller
      * @param Request $request
      * @return Response
      */
-    public function create(Request $request): Response
+    public function create(Request $request)
     {
-        return $this->view('{{ModelName}}/create');
+        return $this->render('{{ModelName}}/create');
     }
 
     /**
@@ -242,7 +242,7 @@ class {{ControllerName}} extends Controller
      * @param int $id
      * @return Response
      */
-    public function show(Request $request, int $id): Response
+    public function show(Request $request, int $id)
     {
         $item = {{ModelName}}::find($id);
 
@@ -250,7 +250,7 @@ class {{ControllerName}} extends Controller
             return $this->abort(404);
         }
 
-        return $this->view('{{ModelName}}/show', [
+        return $this->render('{{ModelName}}/show', [
             'item' => $item,
         ]);
     }
@@ -262,7 +262,7 @@ class {{ControllerName}} extends Controller
      * @param int $id
      * @return Response
      */
-    public function edit(Request $request, int $id): Response
+    public function edit(Request $request, int $id)
     {
         $item = {{ModelName}}::find($id);
 
@@ -270,7 +270,7 @@ class {{ControllerName}} extends Controller
             return $this->abort(404);
         }
 
-        return $this->view('{{ModelName}}/edit', [
+        return $this->render('{{ModelName}}/edit', [
             'item' => $item,
         ]);
     }
@@ -335,11 +335,11 @@ EOT;
 
 declare(strict_types=1);
 
-namespace Ace\app\controllers;
+namespace App\app\controllers;
 
-use Ace\ace\Controller;
-use Ace\ace\Http\Request;
-use Ace\ace\Http\Response;
+use Ace\Controller;
+use Ace\Http\Request;
+use Ace\Http\Response;
 
 class {{ControllerName}} extends Controller
 {
@@ -388,12 +388,12 @@ EOT;
 
 declare(strict_types=1);
 
-namespace Ace\app\controllers;
+namespace App\app\controllers;
 
-use Ace\ace\Controller;
-use Ace\ace\Http\Request;
-use Ace\ace\Http\Response;
-use Ace\app\models\{{ModelName}};
+use Ace\Controller;
+use Ace\Http\Request;
+use Ace\Http\Response;
+use App\app\models\{{ModelName}};
 
 class {{ControllerName}} extends Controller
 {
@@ -497,7 +497,7 @@ class {{ControllerName}} extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy(Request $request, int $id): Response
+    public function destroy(Request $request, int $id)
     {
         $item = {{ModelName}}::find($id);
 
