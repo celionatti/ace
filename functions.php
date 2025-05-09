@@ -82,3 +82,35 @@ if(!function_exists('singularize')) {
         return $word;
     }
 }
+
+if(!function_exists('extract_links')) {
+    function extract_links(string $links): array
+    {
+        // Split the comma-separated links
+        $linkArray = array_map('trim', explode(',', $links));
+
+        $result = [
+            'tiktok' => null,
+            'x' => null,
+            'instagram' => null,
+            'facebook' => null,
+            'others' => [],
+        ];
+
+        foreach ($linkArray as $url) {
+            if (stripos($url, 'tiktok.com') !== false) {
+                $result['tiktok'] = $url;
+            } elseif (stripos($url, 'x.com') !== false || stripos($url, 'twitter.com') !== false) {
+                $result['x'] = $url;
+            } elseif (stripos($url, 'instagram.com') !== false) {
+                $result['instagram'] = $url;
+            } elseif (stripos($url, 'facebook.com') !== false) {
+                $result['facebook'] = $url;
+            } else {
+                $result['others'][] = $url;
+            }
+        }
+
+        return $result;
+    }
+}
