@@ -114,3 +114,27 @@ if(!function_exists('extract_links')) {
         return $result;
     }
 }
+
+if(!function_exists('stringifyLink')) {
+    function stringifyLink(array $inputLinks): string
+    {
+        $cleanedLinks = [];
+
+        foreach ($inputLinks as $url) {
+            $url = trim($url);
+
+            if (empty($url)) {
+                continue;
+            }
+
+            // Sanitize and validate URL
+            $safeUrl = filter_var($url, FILTER_SANITIZE_URL);
+
+            if (filter_var($safeUrl, FILTER_VALIDATE_URL)) {
+                $cleanedLinks[] = htmlspecialchars($safeUrl, ENT_QUOTES, 'UTF-8');
+            }
+        }
+
+        return implode(', ', $cleanedLinks);
+    }
+}
