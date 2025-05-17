@@ -6,7 +6,7 @@ namespace Ace\Middleware;
 
 use Ace\Http\Request;
 use Ace\Container\Container;
-use Ace\Exception\AceException;
+use Exception;
 use Ace\Security\MiddlewareSignature;
 use Ace\Performance\MiddlewarePool;
 
@@ -62,7 +62,7 @@ class MiddlewarePipeline
     {
         if (!method_exists($instance, 'handle')) {
             $this->pool->remove($name);
-            throw new AceException("Middleware [{$name}] must implement handle() method");
+            throw new Exception("Middleware [{$name}] must implement handle() method");
         }
     }
 

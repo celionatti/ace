@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Ace\View;
 
-use Ace\Exception\AceException;
+use Exception;
 
 class View
 {
@@ -130,7 +130,7 @@ class View
     public function start(string $key): void
     {
         if (empty($key)) {
-            throw new AceException("Section key cannot be empty");
+            throw new Exception("Section key cannot be empty");
         }
 
         // End any current section before starting a new one
@@ -176,7 +176,7 @@ class View
         $fullPath = $this->resolvePath('partials' . DIRECTORY_SEPARATOR . $path);
 
         if (!file_exists($fullPath)) {
-            throw new AceException("Partial view not found: $path", 404);
+            throw new Exception("Partial view not found: $path", 404);
         }
 
         // Get the content of the partial
@@ -194,7 +194,7 @@ class View
             eval('?>' . $compiledContent);
         } catch (\Throwable $e) {
             ob_end_clean();
-            throw new AceException("Error rendering partial $path: " . $e->getMessage());
+            throw new Exception("Error rendering partial $path: " . $e->getMessage());
         }
 
         // Output the rendered content

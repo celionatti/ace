@@ -58,6 +58,24 @@ class Request
         );
     }
 
+    // private static function parseRequestBody(): array
+    // {
+    //     $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    //     $input = file_get_contents('php://input');
+
+    //     if (str_starts_with($contentType, 'application/json')) {
+    //         return json_decode($input, true) ?? [];
+    //     }
+
+    //     if (str_starts_with($contentType, 'application/x-www-form-urlencoded')) {
+    //         $data = [];
+    //         parse_str($input, $data);
+    //         return $data;
+    //     }
+
+    //     return $_POST;
+    // }
+
     private static function parseRequestBody(): array
     {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
@@ -68,8 +86,19 @@ class Request
         }
 
         if (str_starts_with($contentType, 'application/x-www-form-urlencoded')) {
+            $data = [];
             parse_str($input, $data);
             return $data;
+        }
+
+        if (str_starts_with($contentType, 'multipart/form-data')) {
+            // multipart/form-data is automatically parsed by PHP into $_POST and $_FILES
+            return array_merge($_POST, $_FILES);
+        }
+
+        if (str_starts_with($contentType, 'text/plain')) {
+            // Simple plain text data – wrap it in an array
+            return ['raw' => $input];
         }
 
         return $_POST;
@@ -82,7 +111,8 @@ class Request
         if ($validator->fails()) {
             $this->errors = $validator->errors();
             if ($throw) {
-                throw new SecurityException('Validation failed', 422, $this->errors);
+                throw new SecurityException();
+                // throw new SecurityException('Validation failed', 422, $this->errors);
             }
             return false;
         }
@@ -178,10 +208,26 @@ class Request
         return isset($this->headers[strtolower($name)]);
     }
 
+    // public function bearerToken(): ?string
+    // {
+    //     $header = $this->header('Authorization');
+    //     return preg_match('/Bearer\s+(\S+)/', $header, $matches) ? $matches[1] : null;
+    // }
+
     public function bearerToken(): ?string
     {
         $header = $this->header('Authorization');
-        return preg_match('/Bearer\s+(\S+)/', $header, $matches) ? $matches[1] : null;
+        $matches = [];
+
+        if (!is_string($header)) {
+            return null;
+        }
+
+        if (preg_match('/^Bearer\s+(\S+)$/', trim($header), $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 
     private function determineMethod(): string

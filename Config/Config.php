@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ace\Config;
 
-use Ace\Exception\ConfigException;
+use Exception;
 
 class Config
 {
@@ -20,7 +20,7 @@ class Config
     public function load(string $path): void
     {
         if (!file_exists($path)) {
-            throw new ConfigException("Config file not found: {$path}");
+            throw new Exception("Config file not found: {$path}");
         }
 
         $key = pathinfo($path, PATHINFO_FILENAME);

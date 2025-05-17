@@ -74,7 +74,7 @@ class ExceptionHandler
         // return true;
     }
 
-    public function handleException(Throwable $exception): void
+    public function handleException($exception): void
     {
         $this->logException($exception);
 
@@ -102,7 +102,8 @@ class ExceptionHandler
         $requestData = $this->getRequestData($request);
 
         if ($this->environment === 'development') {
-            $this->renderDevelopmentError($exception, $requestData);
+            $this->renderDevelopmentError($exception);
+            // $this->renderDevelopmentError($exception, $requestData);
         } else {
             $this->renderProductionError($exception);
         }

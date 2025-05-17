@@ -12,8 +12,8 @@ namespace Ace\Container;
 
 use Closure;
 use Psr\Container\ContainerInterface;
-use Ace\Exception\AceException;
 use Ace\Exception\ContainerNotFoundException;
+use Exception;
 
 class Container implements ContainerInterface
 {
@@ -83,7 +83,7 @@ class Container implements ContainerInterface
             $reflector = new \ReflectionClass($concrete);
 
             if (!$reflector->isInstantiable()) {
-                throw new AceException("Class '{$concrete}' is not instantiable.", 424, "info");
+                throw new Exception("Class '{$concrete}' is not instantiable.", 424, "info");
             }
 
             $constructor = $reflector->getConstructor();
@@ -96,7 +96,7 @@ class Container implements ContainerInterface
 
             return $reflector->newInstanceArgs($dependencies);
         } catch (\ReflectionException $e) {
-            throw new AceException("Error resolving '{$concrete}': " . $e->getMessage(), $e->getCode());
+            throw new Exception("Error resolving '{$concrete}': " . $e->getMessage(), $e->getCode());
         }
     }
 
@@ -115,7 +115,7 @@ class Container implements ContainerInterface
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
             } else {
-                throw new AceException("Unable to resolve dependency: {$paramName}", 424, "info");
+                throw new Exception("Unable to resolve dependency: {$paramName}", 424, "info");
             }
         }
 
@@ -130,7 +130,8 @@ class Container implements ContainerInterface
     private function resolve(string $abstract, array $parameters = [])
     {
         if (!class_exists($abstract)) {
-            throw new ContainerNotFoundException("No entry was found for '{$abstract}'.");
+            throw new Exception("No entry was found for '{$abstract}'.");
+            // throw new ContainerNotFoundException("No entry was found for '{$abstract}'.");
         }
 
         return $this->build($abstract, $parameters);
@@ -160,7 +161,8 @@ class Container implements ContainerInterface
         try {
             return $this->make($id);
         } catch (AceException $e) {
-            throw new ContainerNotFoundException("No entry was found for '{$id}'.");
+            throw new Exception("No entry was found for '{$id}'.");
+            // throw new ContainerNotFoundException("No entry was found for '{$id}'.");
         }
     }
 

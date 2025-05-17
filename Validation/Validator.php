@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Ace\Validation;
 
 use Ace\Database\Database;
-use Ace\Exception\AceException;
+use Exception;
 
 class Validator
 {
@@ -40,7 +40,7 @@ class Validator
                 } elseif (isset(self::$customValidators[$parameters[0]])) {
                     call_user_func(self::$customValidators[$parameters[0]], $this, $field, $parameters[1] ?? null);
                 } else {
-                    throw new AceException("Validation rule {$parameters[0]} does not exist.");
+                    throw new Exception("Validation rule {$parameters[0]} does not exist.");
                 }
             }
         }
@@ -145,6 +145,7 @@ class Validator
         if (isset($parts[1])) {
             // Parse additional condition(s), e.g., "id != 1"
             $additionalCondition = trim($parts[1]);
+            $matches = [];
 
             // Assuming the format 'field != value' or 'field = value'
             if (preg_match('/(\w+)\s*(=|!=|<|>|<=|>=)\s*(.+)/', $additionalCondition, $matches)) {
@@ -164,7 +165,7 @@ class Validator
                     $params[$conditionField] = $conditionValue;
                 }
             } else {
-                throw new AceException("Invalid condition format in unique validation.");
+                throw new Exception("Invalid condition format in unique validation.");
             }
         }
 

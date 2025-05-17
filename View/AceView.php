@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Ace\View;
 
-use Ace\Exception\AceException;
+// use Ace\Exception\AceException;
 
 class AceView
 {

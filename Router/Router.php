@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ace\Router;
 
-use Ace\Exception\HttpException;
+use Exception;
 use Ace\Http\Request;
 use Ace\Router\Route;
 use Ace\Router\RouteGroup;
@@ -69,7 +69,7 @@ class Router
         if (!isset($this->routesByMethod[$method])) {
             // Could add logging here to debug
             // For example: error_log("No routes found for method: $method, path: $path");
-            throw new HttpException("No routes registered for method: $method", 404);
+            throw new Exception("No routes registered for method: $method", 404);
         }
 
         $routes = $this->routesByMethod[$method];
@@ -87,7 +87,7 @@ class Router
 
         // Could add logging here to debug
         // error_log("Path '$path' did not match any routes for method: $method");
-        throw new HttpException("Route not found for path: $path", 404);
+        throw new Exception("Route not found for path: $path", 404);
     }
 
     /**

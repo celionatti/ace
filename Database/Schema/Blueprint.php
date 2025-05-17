@@ -234,7 +234,6 @@ class Blueprint
      * @param string|array $columns
      * @param string $table
      * @param string|array $references
-     * @return ForeignKeyDefinition
      */
     public function foreign($columns, $table = null, $references = null)
     {
