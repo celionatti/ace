@@ -1,4 +1,5 @@
 vendor/*
+src/*
 .env
 scratch/*
 /storage/*
