@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Ensure RewriteBase is matched to the public directory
+    # RewriteCond checks if the request is not a directory or file
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    
+    # Send everything else to index.php
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>

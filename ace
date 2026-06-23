@@ -1,0 +1,192 @@
+<?php
+
+if (php_sapi_name() !== 'cli') {
+    echo "This script can only be run from the CLI.\n";
+    exit(1);
+}
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Ace\Application;
+
+$rootDir = __DIR__;
+
+// Boot up basic app variables
+$appConfig = require_once $rootDir . '/config/app.php';
+$dbConfig = require_once $rootDir . '/config/database.php';
+$config = array_merge($appConfig, ['db' => $dbConfig]);
+$app = new Application($rootDir, $config);
+
+// Command arguments
+$args = $argv;
+$command = $args[1] ?? 'help';
+
+echo "\n✨ Mini PHP MVC - Ace CLI Command Runner\n";
+echo "==========================================\n";
+
+switch ($command) {
+    case 'migrate':
+        echo "🏃 Running migrations...\n";
+        try {
+            if ($app->db) {
+                $manager = new \Ace\MigrationManager($app->db->pdo, $rootDir . '/migrations');
+                $manager->applyMigrations();
+            } else {
+                echo "❌ Error: Database config is empty.\n\n";
+            }
+        } catch (Exception $e) {
+            echo "❌ Error: " . $e->getMessage() . "\n\n";
+        }
+        break;
+
+    case 'migrate:rollback':
+        echo "🏃 Rolling back last migration batch...\n";
+        try {
+            if ($app->db) {
+                $manager = new \Ace\MigrationManager($app->db->pdo, $rootDir . '/migrations');
+                $manager->rollback();
+            } else {
+                echo "❌ Error: Database config is empty.\n\n";
+            }
+        } catch (Exception $e) {
+            echo "❌ Error: " . $e->getMessage() . "\n\n";
+        }
+        break;
+
+    case 'migrate:status':
+        echo "🏃 Checking migration status...\n";
+        try {
+            if ($app->db) {
+                $manager = new \Ace\MigrationManager($app->db->pdo, $rootDir . '/migrations');
+                $manager->status();
+            } else {
+                echo "❌ Error: Database config is empty.\n\n";
+            }
+        } catch (Exception $e) {
+            echo "❌ Error: " . $e->getMessage() . "\n\n";
+        }
+        break;
+
+    case 'make:migration':
+        $name = $args[2] ?? null;
+        if (!$name) {
+            echo "❌ Error: Please specify the migration description. e.g. php ace make:migration create_products_table\n\n";
+            exit(1);
+        }
+        try {
+            if ($app->db) {
+                $manager = new \Ace\MigrationManager($app->db->pdo, $rootDir . '/migrations');
+                $filePath = $manager->makeMigration($name);
+                echo "✅ Created Migration: migrations/" . basename($filePath) . "\n\n";
+            } else {
+                echo "❌ Error: Database config is empty.\n\n";
+            }
+        } catch (Exception $e) {
+            echo "❌ Error: " . $e->getMessage() . "\n\n";
+        }
+        break;
+
+    case 'make:controller':
+        $name = $args[2] ?? null;
+        if (!$name) {
+            echo "❌ Error: Please specify the controller name. e.g. php ace make:controller Product\n\n";
+            exit(1);
+        }
+        
+        $name = ucfirst($name);
+        if (!str_ends_with($name, 'Controller')) {
+            $name .= 'Controller';
+        }
+        
+        $filePath = $rootDir . "/app/Controllers/{$name}.php";
+        if (file_exists($filePath)) {
+            echo "❌ Error: Controller '{$name}' already exists.\n\n";
+            exit(1);
+        }
+
+        $template = "<?php\n\nnamespace App\Controllers;\n\nuse Ace\Controller;\nuse Ace\Request;\n\nclass {$name} extends Controller\n{\n    public function index(Request \$request): string\n    {\n        return \$this->render('home', [\n            'title' => '{$name}'\n        ]);\n    }\n}\n";
+        
+        file_put_contents($filePath, $template);
+        echo "✅ Created Controller: app/Controllers/{$name}.php\n\n";
+        break;
+
+    case 'make:model':
+        $name = $args[2] ?? null;
+        if (!$name) {
+            echo "❌ Error: Please specify the model name. e.g. php ace make:model Product\n\n";
+            exit(1);
+        }
+        
+        $name = ucfirst($name);
+        $tableName = strtolower($name) . 's'; // simple pluralization
+        
+        $filePath = $rootDir . "/app/Models/{$name}.php";
+        if (file_exists($filePath)) {
+            echo "❌ Error: Model '{$name}' already exists.\n\n";
+            exit(1);
+        }
+
+        $template = "<?php\n\nnamespace App\Models;\n\nuse Ace\Model;\n\nclass {$name} extends Model\n{\n    public static function tableName(): string\n    {\n        return '{$tableName}';\n    }\n\n    public function primaryKey(): string\n    {\n        return 'id';\n    }\n\n    public function rules(): array\n    {\n        return [\n            // Define validation rules here\n        ];\n    }\n}\n";
+        
+        file_put_contents($filePath, $template);
+        echo "✅ Created Model: app/Models/{$name}.php\n\n";
+        break;
+
+    case 'make:middleware':
+        $name = $args[2] ?? null;
+        if (!$name) {
+            echo "❌ Error: Please specify the middleware name. e.g. php ace make:middleware Cors\n\n";
+            exit(1);
+        }
+        
+        $name = ucfirst($name);
+        if (!str_ends_with($name, 'Middleware')) {
+            $name .= 'Middleware';
+        }
+        
+        $filePath = $rootDir . "/app/Middlewares/{$name}.php";
+        if (file_exists($filePath)) {
+            echo "❌ Error: Middleware '{$name}' already exists.\n\n";
+            exit(1);
+        }
+
+        $template = "<?php\n\nnamespace App\Middlewares;\n\nuse Ace\Middleware;\n\nclass {$name} extends Middleware\n{\n    protected function run(): void\n    {\n        // Implement middleware check here\n    }\n}\n";
+        
+        file_put_contents($filePath, $template);
+        echo "✅ Created Middleware: app/Middlewares/{$name}.php\n\n";
+        break;
+
+    case 'view:clear':
+        echo "🧹 Clearing compiled view cache...\n";
+        $cacheDir = $rootDir . '/storage/views';
+        if (is_dir($cacheDir)) {
+            $files = glob($cacheDir . '/*.php');
+            $count = 0;
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    if (@unlink($file)) {
+                        $count++;
+                    }
+                }
+            }
+            echo "✅ Cleared {$count} cached view files.\n\n";
+        } else {
+            echo "✅ View cache directory is already empty.\n\n";
+        }
+        break;
+
+    case 'help':
+    default:
+        echo "Available Commands:\n";
+        echo "  migrate                  Runs database schemas migrations.\n";
+        echo "  migrate:rollback         Rolls back the last migration batch.\n";
+        echo "  migrate:status           Displays the status of all migrations.\n";
+        echo "  make:migration <name>    Generates a boilerplate timestamped migration file.\n";
+        echo "  make:controller <Name>   Generates a boilerplate Controller class.\n";
+        echo "  make:model <Name>        Generates a boilerplate Active Record Model class.\n";
+        echo "  make:middleware <Name>   Generates a boilerplate Middleware class.\n";
+        echo "  view:clear               Wipes all cached, compiled view templates.\n";
+        echo "  help                     Shows this help manual.\n\n";
+        break;
+}
+
